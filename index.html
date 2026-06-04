@@ -4,10 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Setor de Enfermaria Pediátrica — Apresentação</title>
-  <link rel="stylesheet" href="css/styles.css?v=2" />
+  <link rel="stylesheet" href="css/styles.css?v=3" />
 </head>
 <body>
   <div id="deck">
+    <!-- Canvas 3D compartilhado: fundo fixo de todos os slides 3D -->
+    <div class="canvas3d" id="canvas3d"><!-- Three.js via JS --></div>
+
     <!-- Slide 0: capa -->
     <section class="slide slide--active" data-slide="cover">
       <div class="cover">
@@ -28,10 +31,32 @@
       </main>
     </section>
 
-    <!-- Slide 2: maquete 3D -->
-    <section class="slide" data-slide="3d">
-      <div class="slide__title">Maquete 3D — Setor de Enfermaria Pediátrica</div>
-      <div class="canvas3d" id="canvas3d"><!-- Three.js via JS --></div>
+    <!-- Slide 2: maquete 3D — visão geral -->
+    <section class="slide slide--3d" data-slide="3d"
+             data-cam="0,33,31" data-target="0,0,0">
+      <div class="slide__title">Maquete 3D — Visão Geral do Setor</div>
+      <div class="slide__caption">Setor de Enfermaria Pediátrica completo · use ← → para percorrer os ambientes</div>
+    </section>
+
+    <!-- Slide 3: interior do Quarto de Criança -->
+    <section class="slide slide--3d" data-slide="3d"
+             data-cam="-13.6,2.4,-2.6" data-target="-8,1,-8.5">
+      <div class="slide__title">Quarto de Criança — 8 leitos · 72 m²</div>
+      <div class="slide__caption">Leitos individualizados com poltrona de acompanhante, criado-mudo e painel de gases na cabeceira</div>
+    </section>
+
+    <!-- Slide 4: interior da Enfermaria de Criança -->
+    <section class="slide slide--3d" data-slide="3d"
+             data-cam="-4.4,2.6,-2.6" data-target="2,1,-9">
+      <div class="slide__title">Enfermaria de Criança — 12 leitos · 60 m²</div>
+      <div class="slide__caption">Internação coletiva em duas fileiras de leitos, circulação central ampla</div>
+    </section>
+
+    <!-- Slide 5: interior do Posto de Enfermagem -->
+    <section class="slide slide--3d" data-slide="3d"
+             data-cam="10,3.2,3.5" data-target="14.5,0.8,9.2">
+      <div class="slide__title">Posto de Enfermagem</div>
+      <div class="slide__caption">Balcão aberto de apoio: monitoramento, prescrição e base da equipe de enfermagem</div>
     </section>
   </div>
 
@@ -42,12 +67,12 @@
   <script src="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 
   <!-- ordem importa: dados -> mobiliário -> render 2D -> 3D -> slides -->
-  <script src="js/rooms.js?v=4"></script>
+  <script src="js/rooms.js?v=5"></script>
   <script src="js/furniture.js?v=4"></script>
   <script src="js/render.js?v=4"></script>
   <script src="js/main.js?v=4"></script>
   <script src="js/export.js?v=1"></script>
-  <script src="js/scene3d.js?v=9"></script>
-  <script src="js/slides.js?v=4"></script>
+  <script src="js/scene3d.js?v=16"></script>
+  <script src="js/slides.js?v=5"></script>
 </body>
 </html>

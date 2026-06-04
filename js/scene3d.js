@@ -78,7 +78,7 @@
     controls.dampingFactor = 0.08;
     controls.target.set(0, 0, 0);
     controls.maxPolarAngle = Math.PI / 2.05;  // não passa do chão
-    controls.minDistance = 12;
+    controls.minDistance = 2;                  // permite vistas internas próximas
     controls.maxDistance = 110;
     controls.update();
 
@@ -103,9 +103,6 @@
       buildFurniture(r);
     });
 
-    // plantas decorativas em pontos abertos da circulação
-    [[13, 11.5], [30, 11.5], [39, 14.5], [33, 11.5]].forEach(function (p) { plant3D(p[0], p[1]); });
-
     addBuildingShell();
   }
 
@@ -116,10 +113,13 @@
   function bedColor(c) { return c === 'green' ? 0x9ec486 : c === 'blue' ? 0x86b3df : 0xd0d8e0; }
 
   function placeBed(x, z, w, d, hex, headTop) {
-    fb(x, z, w, d, 0.5, hex, 0.3);                                   // colchão
+    fb(x, z, w, d, 0.42, 0xeef4fa, 0.34);                            // colchão/lençol branco
+    // cobertor colorido cobrindo a metade dos pés (mantém o código de cor)
+    var coverD = d * 0.55, coverZ = headTop ? z + d - coverD : z;
+    fb(x + 0.02, coverZ, w - 0.04, coverD, 0.12, hex, 0.55);         // cobertor
     var pw = w * 0.72, pd = Math.min(0.42, d * 0.26);
-    var pz = headTop ? z + 0.07 : z + d - pd - 0.07;
-    fb(x + (w - pw) / 2, pz, pw, pd, 0.16, 0xf2f6fb, 0.6);           // travesseiro
+    var pz = headTop ? z + 0.08 : z + d - pd - 0.08;
+    fb(x + (w - pw) / 2, pz, pw, pd, 0.16, 0xf7fafe, 0.6);           // travesseiro
     var hz = headTop ? z - 0.02 : z + d - 0.08;
     fb(x - 0.04, hz, w + 0.08, 0.1, 1.0, 0xcdba9b, 0.5);             // cabeceira
     // painel de gases na cabeceira (faixa cinza)
@@ -127,6 +127,10 @@
     // criado-mudo ao lado
     var tz = headTop ? z + 0.05 : z + d - 0.5;
     fb(x + w + 0.05, tz, 0.4, 0.45, 0.55, 0xe7ddc9, 0.28);
+    // suporte de soro (haste + bolsa) junto à cabeceira
+    var sx = x - 0.18, sz = headTop ? z + 0.12 : z + d - 0.12;
+    cyl(sx, sz, 0.025, 1.55, 0x9aa3ad, 0.78);                        // haste
+    fb(sx - 0.07, sz - 0.03, 0.14, 0.06, 0.22, 0xd2e4f2, 1.45);      // bolsa de soro
   }
 
   function cyl(px, pz, rad, h, hex, y) {
@@ -152,6 +156,38 @@
     });
   }
 
+  // berço: colchão baixo + grades nos 4 lados
+  function crib3D(x, z, w, d) {
+    fb(x + 0.05, z + 0.05, w - 0.1, d - 0.1, 0.3, 0xf7eef4, 0.33);     // colchão
+    var rh = 0.6, rt = 0.05, wood = 0xd6c0a8;
+    fb(x, z, w, rt, rh, wood, rh / 2);                                 // grade norte
+    fb(x, z + d - rt, w, rt, rh, wood, rh / 2);                        // sul
+    fb(x, z, rt, d, rh, wood, rh / 2);                                 // oeste
+    fb(x + w - rt, z, rt, d, rh, wood, rh / 2);                        // leste
+  }
+
+  // vaso sanitário (bacia + caixa de descarga atrás)
+  function toilet3D(px, pz) {
+    fb(px - 0.18, pz - 0.22, 0.36, 0.44, 0.42, 0xffffff, 0.21);        // bacia
+    fb(px - 0.2, pz + 0.16, 0.4, 0.16, 0.55, 0xf3f5f7, 0.33);          // caixa
+  }
+  // pia sobre bancada (cuba + torneira)
+  function sinkBasin(px, pz) {
+    fb(px - 0.2, pz - 0.16, 0.4, 0.3, 0.08, 0xdfe8f0, 0.84);           // cuba
+    fb(px - 0.04, pz + 0.05, 0.08, 0.08, 0.14, 0xb9c2cc, 0.92);        // torneira
+  }
+  // poltrona de acompanhante (assento + encosto + braços)
+  // faceNorth=true: encosto ao sul, assento olhando p/ o norte (cama acima);
+  // faceNorth=false: encosto ao norte, olhando p/ o sul (cama abaixo).
+  function poltrona(px, pz, faceNorth, hex) {
+    var seat = hex || 0x7fa896, arm = 0x5f8473;
+    fb(px - 0.3, pz - 0.28, 0.6, 0.56, 0.42, seat, 0.21);              // assento
+    var ez = faceNorth ? pz + 0.18 : pz - 0.30;
+    fb(px - 0.3, ez, 0.6, 0.12, 0.72, seat, 0.46);                    // encosto
+    fb(px - 0.32, pz - 0.28, 0.1, 0.5, 0.52, arm, 0.32);              // braço esq
+    fb(px + 0.22, pz - 0.28, 0.1, 0.5, 0.52, arm, 0.32);              // braço dir
+  }
+
   function buildFurniture(r) {
     var f = r.furnish; if (!f) return;
     var t = f.type;
@@ -173,39 +209,66 @@
     var n = f.count, hex = bedColor(f.color), i, placed = 0;
     if (n === 1) {
       var bw1 = Math.min(1.1, r.w * 0.4), bl1 = Math.min(2.1, r.h * 0.5);
-      placeBed(r.x + r.w * 0.32 - bw1 / 2, r.y + 0.5, bw1, bl1, hex, true);
+      var bxc = r.x + r.w * 0.3;
+      placeBed(bxc - bw1 / 2, r.y + 0.5, bw1, bl1, hex, true);
       if (f.iso) {
-        var bx = r.x + r.w - 1.4;
-        fb(bx, r.y + r.h - 0.85, 0.4, 0.5, 0.4, 0xffffff, 0.2);   // vaso
-        fb(bx, r.y + 0.5, 0.5, 0.36, 0.85, 0xffffff, 0.42);       // pia
+        var bx = r.x + r.w - 1.7;
+        fb(bx - 0.05, r.y + 0.25, 0.06, r.h - 0.5, 1.7, 0xe9e9ee, 0.85);   // parede do WC
+        fb(bx + 0.15, r.y + 0.35, 0.85, 0.45, 0.82, 0xeef1f4, 0.41);       // bancada
+        sinkBasin(bx + 0.6, r.y + 0.57);
+        toilet3D(bx + 0.6, r.y + r.h - 0.6);
       }
       return;
     }
     var cols = Math.ceil(n / 2), slot = r.w / cols;
     var bw = Math.min(1.1, slot * 0.6), bl = Math.min(2.0, r.h * 0.3);
     for (i = 0; i < cols && placed < n; i++, placed++) {
-      placeBed(r.x + i * slot + slot / 2 - bw / 2, r.y + 0.45, bw, bl, hex, true);
+      var ct = r.x + i * slot + slot / 2;
+      placeBed(ct - bw / 2, r.y + 0.45, bw, bl, hex, true);
+      if (f.chairs) poltrona(ct, r.y + 0.45 + bl + 0.5, true);       // poltrona ao pé, olhando p/ a cama (norte)
     }
     for (i = 0; i < cols && placed < n; i++, placed++) {
-      placeBed(r.x + i * slot + slot / 2 - bw / 2, r.y + r.h - 0.45 - bl, bw, bl, hex, false);
+      var cb = r.x + i * slot + slot / 2;
+      placeBed(cb - bw / 2, r.y + r.h - 0.45 - bl, bw, bl, hex, false);
+      if (f.chairs) poltrona(cb, r.y + r.h - 0.45 - bl - 0.5, false); // olhando p/ a cama (sul)
     }
   }
 
   function fCribs(r, f) {
     var n = f.count, cols = (r.w >= r.h) ? 4 : 3, rows = Math.ceil(n / cols), k = 0, i, j;
     var cw = r.w / cols, ch = (r.h * 0.6) / rows;
-    var bw = Math.min(1.2, cw * 0.62), bl = Math.min(1.4, ch * 0.72);
+    var bw = Math.min(1.15, cw * 0.6), bl = Math.min(1.35, ch * 0.7);
     for (j = 0; j < rows; j++) for (i = 0; i < cols && k < n; i++, k++) {
-      fb(r.x + i * cw + (cw - bw) / 2, r.y + 0.4 + j * ch + (ch - bl) / 2, bw, bl, 0.55, 0xf2e6ef, 0.32);
+      crib3D(r.x + i * cw + (cw - bw) / 2, r.y + 0.4 + j * ch + (ch - bl) / 2, bw, bl);
     }
     fb(r.x + 0.5, r.y + r.h - 1.0, r.w - 1.0, 0.6, 0.85, 0xe7ddc9, 0.42);
   }
 
   function fStation(r) {
+    var i;
+    // balcão de atendimento (corpo + tampo) na frente (norte)
     fb(r.x + 0.3, r.y + 0.35, r.w - 0.6, 0.6, 0.95, 0xe7ddc9, 0.5);
-    fb(r.x + r.w / 2 - 0.28, r.y + 0.52, 0.56, 0.1, 0.34, 0x33414f, 1.12);  // monitor
-    var n = Math.max(2, Math.floor((r.w - 0.6) / 1.0));
-    for (var i = 0; i < n; i++) fb(r.x + 0.7 + i * 1.0 - 0.2, r.y + 1.5, 0.4, 0.4, 0.45, 0xcdd5df, 0.22);
+    fb(r.x + 0.25, r.y + 0.3, r.w - 0.5, 0.72, 0.06, 0xc9b288, 1.0);    // tampo
+    // monitores + teclados sobre o tampo (tela voltada p/ a equipe, ao sul)
+    var nM = Math.max(1, Math.round((r.w - 1.0) / 1.9));
+    for (i = 0; i < nM; i++) {
+      var mx = r.x + 0.9 + (i + 0.5) * (r.w - 1.8) / nM;
+      fb(mx - 0.28, r.y + 0.62, 0.56, 0.06, 0.34, 0x2d3a47, 1.22);      // monitor
+      fb(mx - 0.05, r.y + 0.58, 0.1, 0.08, 0.16, 0x6b7785, 1.06);       // pé
+      fb(mx - 0.22, r.y + 0.74, 0.44, 0.18, 0.03, 0xd7dde4, 1.04);      // teclado
+    }
+    // pastas/papéis no tampo
+    fb(r.x + 0.5, r.y + 0.42, 0.24, 0.3, 0.2, 0xe06b6b, 1.1);
+    fb(r.x + 0.78, r.y + 0.42, 0.2, 0.3, 0.24, 0x6b8cef, 1.12);
+    // armário de apoio ao fundo (sul)
+    fb(r.x + 0.5, r.y + r.h - 0.7, r.w - 1.0, 0.45, 1.2, 0xefe6d4, 0.6);
+    // cadeiras giratórias (assento + encosto) atrás do balcão
+    var nC = Math.max(2, Math.floor((r.w - 0.8) / 1.4));
+    for (i = 0; i < nC; i++) {
+      var cxp = r.x + 0.9 + i * 1.4;
+      fb(cxp - 0.21, r.y + 1.3, 0.42, 0.42, 0.46, 0x6b88a6, 0.24);      // assento
+      fb(cxp - 0.21, r.y + 1.62, 0.42, 0.1, 0.52, 0x5d7793, 0.52);      // encosto
+    }
   }
   function fUtility(r) {
     fb(r.x + 0.25, r.y + 0.3, r.w - 0.5, 0.55, 0.9, 0xe7ddc9, 0.48);
@@ -254,19 +317,36 @@
   }
   function fBathroom(r, f) {
     var i;
+    // chuveiro (canto sup-esq): base + tubo
+    var shw = f.shower ? Math.min(1.1, r.w * 0.4, r.h * 0.4) : 0;
     if (f.shower) {
-      var sh = Math.min(1.0, r.w * 0.42, r.h * 0.42);
-      fb(r.x + 0.15, r.y + 0.15, sh, sh, 0.05, 0xeef6fb, 0.05);
+      fb(r.x + 0.15, r.y + 0.15, shw, shw, 0.05, 0xdce8f1, 0.04);
+      cyl(r.x + 0.15 + shw - 0.25, r.y + 0.4, 0.06, 1.9, 0xc2ccd6, 0.95);
     }
-    var sx = r.x + (f.shower ? Math.min(1.0, r.w * 0.42) + 0.45 : 0.45), step = 0.8;
-    for (i = 0; i < (f.sink || 0); i++) {
-      if (sx + 0.3 > r.x + r.w - 0.2) break;
-      fb(sx - 0.25, r.y + 0.2, 0.5, 0.36, 0.85, 0xffffff, 0.42); sx += step;
+    // pias na parede de cima, sobre bancada
+    var nS = f.sink || 0;
+    if (nS) {
+      var sStart = r.x + (f.shower ? shw + 0.4 : 0.4), sEnd = r.x + r.w - 0.3;
+      if (sEnd - sStart > 0.45) {
+        fb(sStart, r.y + 0.18, sEnd - sStart, 0.5, 0.82, 0xeef1f4, 0.41);   // bancada
+        var ssx = sStart + 0.45;
+        for (i = 0; i < nS && ssx < sEnd - 0.2; i++, ssx += 0.8) sinkBasin(ssx, r.y + 0.42);
+      }
     }
-    var wx = r.x + 0.5, ws = 0.92;
-    for (i = 0; i < (f.wc || 0); i++) {
-      if (wx + 0.25 > r.x + r.w - 0.2) break;
-      fb(wx - 0.2, r.y + r.h - 0.6, 0.4, 0.5, 0.4, 0xffffff, 0.2); wx += ws;
+    // vasos na parede de baixo, cada um dentro de um BOX fechado (baia c/ divisórias)
+    var nW = f.wc || 0;
+    if (nW) {
+      var depth = Math.min(1.4, r.h * 0.42);     // profundidade do box (parede -> dentro)
+      var ws = Math.min(1.2, (r.w - 1.0) / nW);   // largura de cada box
+      var startX = r.x + (r.w - ws * nW) / 2;     // centraliza a fileira de boxes
+      var backZ = r.y + r.h;                       // parede de baixo (fundo dos boxes)
+      var ph = 1.7, pt = 0.07, pc = 0xe4e0ec;      // altura/espessura/cor das divisórias
+      for (i = 0; i < nW; i++) {
+        var bx = startX + i * ws;
+        fb(bx, backZ - depth, pt, depth, ph, pc, ph / 2);   // divisória esquerda do box
+        toilet3D(bx + ws / 2, backZ - 0.55);                // vaso dentro do box
+      }
+      fb(startX + nW * ws - pt, backZ - depth, pt, depth, ph, pc, ph / 2); // fecha o último box
     }
   }
   function fAnteroom(r) {
@@ -370,6 +450,14 @@
    * ------------------------------------------------------------------------*/
   function animate() {
     requestAnimationFrame(animate);
+    if (camGoal) {                                   // transição suave de câmera
+      camera.position.lerp(camGoal, 0.07);
+      controls.target.lerp(tgtGoal, 0.07);
+      if (camera.position.distanceTo(camGoal) < 0.08) {
+        camera.position.copy(camGoal); controls.target.copy(tgtGoal);
+        camGoal = tgtGoal = null;
+      }
+    }
     if (controls) controls.update();
     if (renderer) renderer.render(scene, camera);
   }
@@ -383,6 +471,20 @@
     renderer.setSize(w, h);
   }
 
-  global.Scene3D = { init: init, onShow: onResize };
+  var camGoal = null, tgtGoal = null;
+  function setView(px, py, pz, tx, ty, tz, instant) {
+    if (!camera || !controls) return;
+    if (instant) {
+      camera.position.set(px, py, pz);
+      controls.target.set(tx || 0, ty || 0, tz || 0);
+      controls.update();
+      camGoal = tgtGoal = null;
+      return;
+    }
+    camGoal = new THREE.Vector3(px, py, pz);
+    tgtGoal = new THREE.Vector3(tx || 0, ty || 0, tz || 0);
+  }
+
+  global.Scene3D = { init: init, onShow: onResize, setView: setView };
 
 })(window);

@@ -90,8 +90,37 @@ html, body {
   pointer-events: none;
   white-space: nowrap;
 }
-.canvas3d { width: 100vw; height: 100vh; display: block; }
+/* canvas 3D = fundo fixo compartilhado por todos os slides 3D */
+.canvas3d {
+  position: fixed;
+  inset: 0;
+  width: 100vw; height: 100vh;
+  z-index: 0;
+  display: none;
+}
 .canvas3d canvas { display: block; }
+
+/* slides 3D: transparentes (deixam o canvas aparecer) e não capturam o mouse
+   (para o arraste/órbita chegar ao canvas atrás) */
+.slide--3d { background: transparent; pointer-events: none; }
+
+/* legenda inferior dos slides 3D */
+.slide__caption {
+  position: absolute;
+  bottom: 46px; left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+  max-width: 70ch;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #4a4034;
+  background: rgba(255, 255, 255, .82);
+  padding: 8px 18px;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .1);
+}
 .canvas3d__err {
   display: flex; align-items: center; justify-content: center;
   height: 100%; padding: 40px; text-align: center;
