@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Setor de Enfermaria Pediátrica — Apresentação</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div id="deck">
+    <!-- Slide 1: planta baixa 2D -->
+    <section class="slide slide--active" data-slide="plan">
+      <div class="slide__title">Planta Baixa — Setor de Enfermaria Pediátrica</div>
+      <main class="stage" id="stage">
+        <div class="canvas" id="canvas"><!-- SVG via JS --></div>
+      </main>
+    </section>
+
+    <!-- Slide 2: maquete 3D -->
+    <section class="slide" data-slide="3d">
+      <div class="slide__title">Maquete 3D — Setor de Enfermaria Pediátrica</div>
+      <div class="canvas3d" id="canvas3d"><!-- Three.js via JS --></div>
+    </section>
+  </div>
+
+  <div class="nav-hint">◀ ▶ / espaço — navegar &nbsp;·&nbsp; no 3D: arraste para girar</div>
+
+  <!-- Three.js (3D) -->
+  <script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+  <script src="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+  <!-- ordem importa: dados -> mobiliário -> render 2D -> 3D -> slides -->
+  <script src="js/rooms.js?v=4"></script>
+  <script src="js/furniture.js?v=4"></script>
+  <script src="js/render.js?v=4"></script>
+  <script src="js/main.js?v=4"></script>
+  <script src="js/scene3d.js?v=4"></script>
+  <script src="js/slides.js?v=4"></script>
+</body>
+</html>
