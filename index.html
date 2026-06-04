@@ -4,12 +4,23 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Setor de Enfermaria Pediátrica — Apresentação</title>
-  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/styles.css?v=2" />
 </head>
 <body>
   <div id="deck">
+    <!-- Slide 0: capa -->
+    <section class="slide slide--active" data-slide="cover">
+      <div class="cover">
+        <div class="cover__inst">Faculdade Pernambucana de Saúde</div>
+        <h1 class="cover__title">Gerenciamento do Setor de Enfermagem</h1>
+        <div class="cover__line"></div>
+        <div class="cover__sub">Setor de Enfermaria Pediátrica · Planta baixa &amp; Maquete 3D</div>
+        <div class="cover__hint">Pressione → para começar</div>
+      </div>
+    </section>
+
     <!-- Slide 1: planta baixa 2D -->
-    <section class="slide slide--active" data-slide="plan">
+    <section class="slide" data-slide="plan">
       <div class="slide__title">Planta Baixa — Setor de Enfermaria Pediátrica</div>
       <button id="btn-save-png" class="btn-save" type="button">⬇ Salvar PNG</button>
       <main class="stage" id="stage">
@@ -36,7 +47,7 @@
   <script src="js/render.js?v=4"></script>
   <script src="js/main.js?v=4"></script>
   <script src="js/export.js?v=1"></script>
-  <script src="js/scene3d.js?v=4"></script>
+  <script src="js/scene3d.js?v=6"></script>
   <script src="js/slides.js?v=4"></script>
 </body>
 </html>
