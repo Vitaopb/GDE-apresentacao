@@ -214,48 +214,54 @@
     m.castShadow = true; m.receiveShadow = true; scene.add(m); return m;
   }
 
-  // enfermeira sentada, torneada (cilindros/esferas) — de frente p/ o norte (z menor)
-  function nurse3D(px, pz) {
-    var scrub = 0x3f93a8, scrub2 = 0x32788b, skin = 0xe8b58c, hair = 0x4a3526,
-        mask = 0xeef3f7, board = 0xcdb98f, shoe = 0x4a4a4a;
+  // enfermeira sentada, torneada — facing 'north' (padrão) ou 'south'; variant varia cabelo/pele
+  function nurse3D(px, pz, facing, variant) {
+    var s = facing === 'south' ? -1 : 1;                                 // sinal das profundidades (frente)
+    var HAIR = [0x4a3526, 0x2a211c, 0x70512f], SKINS = [0xe8b58c, 0xd49a6b, 0xc0894f];
+    var v = (variant || 0) % 3;
+    var scrub = 0x3f93a8, scrub2 = 0x32788b, skin = SKINS[v], hair = HAIR[v],
+        shoe = 0x4a4a4a, board = 0xcdb98f, mcol = 0xdde9ef, mline = 0xb8cfda;
     sphere(px, pz, 0.16, scrub, 0.52);                                   // quadril
     // coxas (p/ frente) + canelas (p/ baixo) + sapatos
-    limb(px - 0.1, 0.5, pz, px - 0.1, 0.46, pz - 0.46, 0.085, scrub);
-    limb(px + 0.1, 0.5, pz, px + 0.1, 0.46, pz - 0.46, 0.085, scrub);
-    limb(px - 0.1, 0.46, pz - 0.46, px - 0.1, 0.08, pz - 0.5, 0.07, scrub2);
-    limb(px + 0.1, 0.46, pz - 0.46, px + 0.1, 0.08, pz - 0.5, 0.07, scrub2);
-    sphere(px - 0.1, pz - 0.52, 0.075, shoe, 0.06);
-    sphere(px + 0.1, pz - 0.52, 0.075, shoe, 0.06);
+    limb(px - 0.1, 0.5, pz, px - 0.1, 0.46, pz - s * 0.46, 0.085, scrub);
+    limb(px + 0.1, 0.5, pz, px + 0.1, 0.46, pz - s * 0.46, 0.085, scrub);
+    limb(px - 0.1, 0.46, pz - s * 0.46, px - 0.1, 0.08, pz - s * 0.5, 0.07, scrub2);
+    limb(px + 0.1, 0.46, pz - s * 0.46, px + 0.1, 0.08, pz - s * 0.5, 0.07, scrub2);
+    sphere(px - 0.1, pz - s * 0.52, 0.075, shoe, 0.06);
+    sphere(px + 0.1, pz - s * 0.52, 0.075, shoe, 0.06);
     // tronco (cintura -> ombros), busto sutil, ombros estreitos
-    limb(px, 0.55, pz + 0.02, px, 1.04, pz - 0.04, 0.135, scrub);
-    sphere(px, pz - 0.11, 0.07, scrub, 0.85);
-    limb(px - 0.16, 1.03, pz - 0.02, px + 0.16, 1.03, pz - 0.02, 0.065, scrub);
+    limb(px, 0.55, pz + s * 0.02, px, 1.04, pz - s * 0.04, 0.135, scrub);
+    sphere(px, pz - s * 0.11, 0.07, scrub, 0.85);
+    limb(px - 0.16, 1.03, pz - s * 0.02, px + 0.16, 1.03, pz - s * 0.02, 0.065, scrub);
     // pescoço + cabeça
-    cyl(px, pz - 0.02, 0.043, 0.1, skin, 1.14);
-    sphere(px, pz - 0.04, 0.125, skin, 1.29);
-    // cabelo (calota) + rabo de cavalo
-    sphere(px, pz + 0.04, 0.14, hair, 1.33);
-    limb(px, 1.33, pz + 0.12, px, 0.97, pz + 0.17, 0.05, hair);
+    cyl(px, pz - s * 0.02, 0.043, 0.1, skin, 1.14);
+    sphere(px, pz - s * 0.04, 0.125, skin, 1.29);
+    // cabelo (calota) + rabo de cavalo (atrás)
+    sphere(px, pz + s * 0.04, 0.14, hair, 1.33);
+    limb(px, 1.33, pz + s * 0.12, px, 0.97, pz + s * 0.17, 0.05, hair);
     // olhos + sobrancelhas (acima da máscara)
-    sphere(px - 0.045, pz - 0.145, 0.02, 0xffffff, 1.332);
-    sphere(px + 0.045, pz - 0.145, 0.02, 0xffffff, 1.332);
-    sphere(px - 0.045, pz - 0.152, 0.012, 0x2c2420, 1.332);
-    sphere(px + 0.045, pz - 0.152, 0.012, 0x2c2420, 1.332);
-    blob(px - 0.05, pz - 0.15, 0.024, hair, 1.368, 1.2, 0.35, 0.5);
-    blob(px + 0.05, pz - 0.15, 0.024, hair, 1.368, 1.2, 0.35, 0.5);
-    // máscara cirúrgica (concha sobre nariz/boca) + alças até as orelhas
-    blob(px, pz - 0.115, 0.1, mask, 1.2, 1.0, 0.92, 0.6);
-    limb(px - 0.085, 1.235, pz - 0.06, px - 0.12, 1.3, pz + 0.04, 0.012, mask);
-    limb(px + 0.085, 1.235, pz - 0.06, px + 0.12, 1.3, pz + 0.04, 0.012, mask);
+    sphere(px - 0.045, pz - s * 0.145, 0.02, 0xffffff, 1.332);
+    sphere(px + 0.045, pz - s * 0.145, 0.02, 0xffffff, 1.332);
+    sphere(px - 0.045, pz - s * 0.153, 0.012, 0x2c2420, 1.332);
+    sphere(px + 0.045, pz - s * 0.153, 0.012, 0x2c2420, 1.332);
+    blob(px - 0.05, pz - s * 0.15, 0.024, hair, 1.368, 1.2, 0.35, 0.5);
+    blob(px + 0.05, pz - s * 0.15, 0.024, hair, 1.368, 1.2, 0.35, 0.5);
+    // máscara cirúrgica: corpo (concha) + peça sobre o nariz + 2 pregas + alças
+    blob(px, pz - s * 0.115, 0.11, mcol, 1.19, 1.06, 1.02, 0.6);
+    blob(px, pz - s * 0.125, 0.07, mcol, 1.278, 1.0, 0.5, 0.5);
+    limb(px - 0.085, 1.16, pz - s * 0.185, px + 0.085, 1.16, pz - s * 0.185, 0.007, mline);
+    limb(px - 0.08, 1.225, pz - s * 0.19, px + 0.08, 1.225, pz - s * 0.19, 0.007, mline);
+    limb(px - 0.09, 1.305, pz - s * 0.05, px - 0.12, 1.31, pz + s * 0.05, 0.012, mcol);
+    limb(px + 0.09, 1.305, pz - s * 0.05, px + 0.12, 1.31, pz + s * 0.05, 0.012, mcol);
     // braços (ombro -> cotovelo -> mãos) segurando a prancheta
-    limb(px - 0.16, 1.0, pz - 0.02, px - 0.18, 0.84, pz - 0.24, 0.05, scrub);
-    limb(px - 0.18, 0.84, pz - 0.24, px - 0.06, 0.82, pz - 0.42, 0.045, skin);
-    limb(px + 0.16, 1.0, pz - 0.02, px + 0.18, 0.84, pz - 0.24, 0.05, scrub);
-    limb(px + 0.18, 0.84, pz - 0.24, px + 0.06, 0.82, pz - 0.42, 0.045, skin);
+    limb(px - 0.16, 1.0, pz - s * 0.02, px - 0.18, 0.84, pz - s * 0.24, 0.05, scrub);
+    limb(px - 0.18, 0.84, pz - s * 0.24, px - 0.06, 0.82, pz - s * 0.42, 0.045, skin);
+    limb(px + 0.16, 1.0, pz - s * 0.02, px + 0.18, 0.84, pz - s * 0.24, 0.05, scrub);
+    limb(px + 0.18, 0.84, pz - s * 0.24, px + 0.06, 0.82, pz - s * 0.42, 0.045, skin);
     // prancheta inclinada, com a FACE (papel + presilha) voltada p/ a enfermeira
-    plank(px, pz - 0.36, 0.3, 0.34, 0.03, board, 0.9, 0.7);          // tábua
-    plank(px, pz - 0.345, 0.25, 0.28, 0.012, 0xfdfdfd, 0.918, 0.7);  // papel (face p/ ela)
-    plank(px, pz - 0.47, 0.13, 0.05, 0.03, 0x8a8f96, 0.955, 0.7);    // presilha no topo
+    plank(px, pz - s * 0.36, 0.3, 0.34, 0.03, board, 0.9, s * 0.7);
+    plank(px, pz - s * 0.345, 0.25, 0.28, 0.012, 0xfdfdfd, 0.918, s * 0.7);
+    plank(px, pz - s * 0.47, 0.13, 0.05, 0.03, 0x8a8f96, 0.955, s * 0.7);
   }
 
   function buildFurniture(r) {
@@ -315,33 +321,36 @@
   }
 
   function fStation(r) {
-    var i;
-    // balcão de atendimento (corpo + tampo) na frente (norte)
-    fb(r.x + 0.3, r.y + 0.35, r.w - 0.6, 0.6, 0.95, 0xe7ddc9, 0.5);
-    fb(r.x + 0.25, r.y + 0.3, r.w - 0.5, 0.72, 0.06, 0xc9b288, 1.0);    // tampo
-    // monitores + teclados sobre o tampo (tela voltada p/ a equipe, ao sul)
+    var i, f = r.furnish || {}, south = f.face === 'south';
+    // espelha em z quando o posto olha p/ o sul (frente = entrada): canto p/ fb, centro p/ peças
+    function zc(z0, dz) { return south ? (2 * r.y + r.h - z0 - dz) : z0; }
+    function zk(z) { return south ? (2 * r.y + r.h - z) : z; }
+    var facing = south ? 'south' : 'north';
+    // balcão de atendimento (corpo + tampo) na frente
+    fb(r.x + 0.3, zc(r.y + 0.35, 0.6), r.w - 0.6, 0.6, 0.95, 0xe7ddc9, 0.5);
+    fb(r.x + 0.25, zc(r.y + 0.3, 0.72), r.w - 0.5, 0.72, 0.06, 0xc9b288, 1.0);  // tampo
+    // monitores + teclados (tela voltada p/ a equipe)
     var nM = Math.max(1, Math.round((r.w - 1.0) / 1.9));
     for (i = 0; i < nM; i++) {
       var mx = r.x + 0.9 + (i + 0.5) * (r.w - 1.8) / nM;
-      fb(mx - 0.28, r.y + 0.62, 0.56, 0.06, 0.34, 0x2d3a47, 1.22);      // monitor
-      fb(mx - 0.05, r.y + 0.58, 0.1, 0.08, 0.16, 0x6b7785, 1.06);       // pé
-      fb(mx - 0.22, r.y + 0.74, 0.44, 0.18, 0.03, 0xd7dde4, 1.04);      // teclado
+      fb(mx - 0.28, zc(r.y + 0.62, 0.06), 0.56, 0.06, 0.34, 0x2d3a47, 1.22);    // monitor
+      fb(mx - 0.05, zc(r.y + 0.58, 0.08), 0.1, 0.08, 0.16, 0x6b7785, 1.06);     // pé
+      fb(mx - 0.22, zc(r.y + 0.74, 0.18), 0.44, 0.18, 0.03, 0xd7dde4, 1.04);    // teclado
     }
-    // pastas/papéis no tampo (na ponta leste, longe da enfermeira)
-    fb(r.x + r.w - 1.15, r.y + 0.42, 0.24, 0.3, 0.2, 0xe06b6b, 1.1);
-    fb(r.x + r.w - 0.85, r.y + 0.42, 0.2, 0.3, 0.24, 0x6b8cef, 1.12);
-    // armário de apoio ao fundo (sul)
-    fb(r.x + 0.5, r.y + r.h - 0.7, r.w - 1.0, 0.45, 1.2, 0xefe6d4, 0.6);
-    // cadeiras giratórias (assento + encosto) atrás do balcão
+    // pastas/papéis no tampo (na ponta leste)
+    fb(r.x + r.w - 1.15, zc(r.y + 0.42, 0.3), 0.24, 0.3, 0.2, 0xe06b6b, 1.1);
+    fb(r.x + r.w - 0.85, zc(r.y + 0.42, 0.3), 0.2, 0.3, 0.24, 0x6b8cef, 1.12);
+    // armário de apoio ao fundo
+    fb(r.x + 0.5, zc(r.y + r.h - 0.7, 0.45), r.w - 1.0, 0.45, 1.2, 0xefe6d4, 0.6);
+    // cadeiras giratórias com uma enfermeira em cada
     var nC = Math.max(2, Math.floor((r.w - 0.8) / 1.4));
     for (i = 0; i < nC; i++) {
       var cxp = r.x + 0.9 + i * 1.4;
-      fb(cxp - 0.21, r.y + 1.32, 0.42, 0.44, 0.46, 0x6b88a6, 0.24);     // assento
-      fb(cxp - 0.21, r.y + 1.66, 0.42, 0.1, 0.56, 0x5d7793, 0.55);      // encosto
-      fb(cxp - 0.03, r.y + 1.5, 0.06, 0.06, 0.24, 0x55606e, 0.12);      // coluna/base
+      fb(cxp - 0.21, zc(r.y + 1.32, 0.44), 0.42, 0.44, 0.46, 0x6b88a6, 0.24);   // assento
+      fb(cxp - 0.21, zc(r.y + 1.66, 0.1), 0.42, 0.1, 0.56, 0x5d7793, 0.55);     // encosto
+      fb(cxp - 0.03, zc(r.y + 1.5, 0.06), 0.06, 0.06, 0.24, 0x55606e, 0.12);    // coluna
+      nurse3D(cxp, zk(r.y + 1.52), facing, i);
     }
-    // enfermeira sentada na 1ª cadeira (livre dos monitores)
-    nurse3D(r.x + 0.9, r.y + 1.52);
   }
   function fUtility(r) {
     fb(r.x + 0.25, r.y + 0.3, r.w - 0.5, 0.55, 0.9, 0xe7ddc9, 0.48);

@@ -121,7 +121,7 @@
 
     /* ===== Hall de entrada (aberto) com o Posto de Enfermagem 1 ========== */
     { id: 'posto-1', name: 'Posto de Enfermagem 1', category: 'enfermagem', open: true,
-      x: 30.5, y: 22, w: 4.5, h: 3.5, area: 6, furnish: { type: 'station' } },
+      x: 30.5, y: 22, w: 4.5, h: 3.5, area: 6, furnish: { type: 'station', face: 'south' } },
     /* área aberta (só segura a porta de entrada) — sem rótulo nem mobiliário */
     { id: 'recepcao', name: 'Hall', category: 'recepcao', noCount: true, decorative: true,
       x: 30.5, y: 13.5, w: 4.5, h: 14.5, area: null },
