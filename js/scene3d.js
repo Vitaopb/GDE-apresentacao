@@ -206,6 +206,13 @@
     m.scale.set(sx || 1, sy || 1, sz || 1);
     m.castShadow = true; m.receiveShadow = true; scene.add(m); return m;
   }
+  // sorriso: meio-toro em "U" no rosto (plano XY, voltado p/ frente)
+  function smileMesh(px, pz, y, r, hex) {
+    var m = new THREE.Mesh(new THREE.TorusGeometry(r, r * 0.22, 8, 16, Math.PI), mat(hex));
+    m.position.set(cx(px), y, cz(pz));
+    m.rotation.z = Math.PI;     // vira ∪ (sorriso)
+    m.castShadow = true; m.receiveShadow = true; scene.add(m); return m;
+  }
   // tábua (caixa fina) com centro em px,pz e inclinação em torno do eixo X
   function plank(px, pz, w, d, h, hex, y, rotX) {
     var m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat(hex));
@@ -220,7 +227,7 @@
     var HAIR = [0x4a3526, 0x2a211c, 0x70512f], SKINS = [0xe8b58c, 0xd49a6b, 0xc0894f];
     var v = (variant || 0) % 3;
     var scrub = 0x3f93a8, scrub2 = 0x32788b, skin = SKINS[v], hair = HAIR[v],
-        shoe = 0x4a4a4a, board = 0xcdb98f, mcol = 0xdde9ef, mline = 0xb8cfda;
+        shoe = 0x4a4a4a, board = 0xcdb98f;
     sphere(px, pz, 0.16, scrub, 0.52);                                   // quadril
     // coxas (p/ frente) + canelas (p/ baixo) + sapatos
     limb(px - 0.1, 0.5, pz, px - 0.1, 0.46, pz - s * 0.46, 0.085, scrub);
@@ -246,12 +253,9 @@
     sphere(px + 0.045, pz - s * 0.153, 0.012, 0x2c2420, 1.332);
     blob(px - 0.05, pz - s * 0.15, 0.024, hair, 1.368, 1.2, 0.35, 0.5);
     blob(px + 0.05, pz - s * 0.15, 0.024, hair, 1.368, 1.2, 0.35, 0.5);
-    // máscara cirúrgica retangular (pequena) sobre nariz/boca + pregas + alças
-    plank(px, pz - s * 0.152, 0.145, 0.04, 0.115, mcol, 1.222);
-    limb(px - 0.062, 1.195, pz - s * 0.173, px + 0.062, 1.195, pz - s * 0.173, 0.006, mline);
-    limb(px - 0.062, 1.248, pz - s * 0.173, px + 0.062, 1.248, pz - s * 0.173, 0.006, mline);
-    limb(px - 0.072, 1.265, pz - s * 0.07, px - 0.113, 1.285, pz + s * 0.05, 0.011, mcol);
-    limb(px + 0.072, 1.265, pz - s * 0.07, px + 0.113, 1.285, pz + s * 0.05, 0.011, mcol);
+    // narizinho + boca sorridente (sem máscara)
+    sphere(px, pz - s * 0.168, 0.02, skin, 1.272);                       // nariz
+    smileMesh(px, pz - s * 0.158, 1.232, 0.042, 0x9c554d);               // sorriso
     // braços (ombro -> cotovelo -> mãos) segurando a prancheta
     limb(px - 0.16, 1.0, pz - s * 0.02, px - 0.18, 0.84, pz - s * 0.24, 0.05, scrub);
     limb(px - 0.18, 0.84, pz - s * 0.24, px - 0.06, 0.82, pz - s * 0.42, 0.045, skin);
