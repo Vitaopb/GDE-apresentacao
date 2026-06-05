@@ -199,6 +199,21 @@
     m.castShadow = true; m.receiveShadow = true; scene.add(m); return m;
   }
 
+  // esfera achatada (escala por eixo) — p/ formas orgânicas (máscara etc.)
+  function blob(px, pz, rad, hex, y, sx, sy, sz) {
+    var m = new THREE.Mesh(new THREE.SphereGeometry(rad, 16, 12), mat(hex));
+    m.position.set(cx(px), y, cz(pz));
+    m.scale.set(sx || 1, sy || 1, sz || 1);
+    m.castShadow = true; m.receiveShadow = true; scene.add(m); return m;
+  }
+  // tábua (caixa fina) com centro em px,pz e inclinação em torno do eixo X
+  function plank(px, pz, w, d, h, hex, y, rotX) {
+    var m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat(hex));
+    m.position.set(cx(px), y, cz(pz));
+    if (rotX) m.rotation.x = rotX;
+    m.castShadow = true; m.receiveShadow = true; scene.add(m); return m;
+  }
+
   // enfermeira sentada, torneada (cilindros/esferas) — de frente p/ o norte (z menor)
   function nurse3D(px, pz) {
     var scrub = 0x3f93a8, scrub2 = 0x32788b, skin = 0xe8b58c, hair = 0x4a3526,
@@ -221,17 +236,19 @@
     // cabelo (calota) + rabo de cavalo
     sphere(px, pz + 0.04, 0.14, hair, 1.33);
     limb(px, 1.33, pz + 0.12, px, 0.97, pz + 0.17, 0.05, hair);
-    // máscara
-    fb(px - 0.07, pz - 0.155, 0.14, 0.05, 0.1, mask, 1.25);
+    // máscara cirúrgica (concha sobre nariz/boca) + alças até as orelhas
+    blob(px, pz - 0.12, 0.105, mask, 1.235, 1.0, 0.95, 0.6);
+    limb(px - 0.09, 1.275, pz - 0.07, px - 0.12, 1.31, pz + 0.04, 0.012, mask);
+    limb(px + 0.09, 1.275, pz - 0.07, px + 0.12, 1.31, pz + 0.04, 0.012, mask);
     // braços (ombro -> cotovelo -> mãos) segurando a prancheta
-    limb(px - 0.16, 1.0, pz - 0.02, px - 0.17, 0.86, pz - 0.22, 0.05, scrub);
-    limb(px - 0.17, 0.86, pz - 0.22, px - 0.05, 0.9, pz - 0.4, 0.045, skin);
-    limb(px + 0.16, 1.0, pz - 0.02, px + 0.17, 0.86, pz - 0.22, 0.05, scrub);
-    limb(px + 0.17, 0.86, pz - 0.22, px + 0.05, 0.9, pz - 0.4, 0.045, skin);
-    // prancheta (tábua inclinada + papel + presilha)
-    fb(px - 0.15, pz - 0.46, 0.3, 0.04, 0.36, board, 0.98);
-    fb(px - 0.12, pz - 0.475, 0.24, 0.012, 0.3, 0xffffff, 0.99);
-    fb(px - 0.06, pz - 0.48, 0.12, 0.02, 0.05, 0x8a8f96, 1.16);
+    limb(px - 0.16, 1.0, pz - 0.02, px - 0.18, 0.84, pz - 0.24, 0.05, scrub);
+    limb(px - 0.18, 0.84, pz - 0.24, px - 0.06, 0.82, pz - 0.42, 0.045, skin);
+    limb(px + 0.16, 1.0, pz - 0.02, px + 0.18, 0.84, pz - 0.24, 0.05, scrub);
+    limb(px + 0.18, 0.84, pz - 0.24, px + 0.06, 0.82, pz - 0.42, 0.045, skin);
+    // prancheta inclinada, com a FACE (papel + presilha) voltada p/ a enfermeira
+    plank(px, pz - 0.36, 0.3, 0.34, 0.03, board, 0.9, 0.7);          // tábua
+    plank(px, pz - 0.345, 0.25, 0.28, 0.012, 0xfdfdfd, 0.918, 0.7);  // papel (face p/ ela)
+    plank(px, pz - 0.47, 0.13, 0.05, 0.03, 0x8a8f96, 0.955, 0.7);    // presilha no topo
   }
 
   function buildFurniture(r) {
@@ -303,9 +320,9 @@
       fb(mx - 0.05, r.y + 0.58, 0.1, 0.08, 0.16, 0x6b7785, 1.06);       // pé
       fb(mx - 0.22, r.y + 0.74, 0.44, 0.18, 0.03, 0xd7dde4, 1.04);      // teclado
     }
-    // pastas/papéis no tampo
-    fb(r.x + 0.5, r.y + 0.42, 0.24, 0.3, 0.2, 0xe06b6b, 1.1);
-    fb(r.x + 0.78, r.y + 0.42, 0.2, 0.3, 0.24, 0x6b8cef, 1.12);
+    // pastas/papéis no tampo (na ponta leste, longe da enfermeira)
+    fb(r.x + r.w - 1.15, r.y + 0.42, 0.24, 0.3, 0.2, 0xe06b6b, 1.1);
+    fb(r.x + r.w - 0.85, r.y + 0.42, 0.2, 0.3, 0.24, 0x6b8cef, 1.12);
     // armário de apoio ao fundo (sul)
     fb(r.x + 0.5, r.y + r.h - 0.7, r.w - 1.0, 0.45, 1.2, 0xefe6d4, 0.6);
     // cadeiras giratórias (assento + encosto) atrás do balcão
