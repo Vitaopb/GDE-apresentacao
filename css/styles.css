@@ -287,6 +287,57 @@ html, body {
 .furn-rug__tile--2 { fill: #3b82f6; }
 .furn-rug__tile--3 { fill: #22c55e; }
 
+/* --------------------- Slides "quadro" (Equipe / Escala) ----------------- */
+.slide--board { background: #f3efe6; }
+.board { height: 100vh; display: flex; flex-direction: column; padding: 16px 28px 14px; }
+.board__title { font-size: 21px; font-weight: 800; color: #3f372c; text-align: center; }
+.board__sub { font-size: 12px; color: #6b6055; text-align: center; margin: 4px 0 12px; }
+.board__body { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+
+/* roster (Equipe) */
+.roster__stats { display: flex; gap: 14px; justify-content: center; margin-bottom: 12px; }
+.stat { background: #fff; border-radius: 12px; padding: 8px 20px; text-align: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,.08); border-top: 3px solid #ccc; min-width: 120px; }
+.stat--all { border-color: #5f5446; } .stat--enf { border-color: #2f7d95; } .stat--tec { border-color: #4f9a5e; }
+.stat__num { font-size: 27px; font-weight: 800; color: #3f372c; line-height: 1; }
+.stat__lbl { font-size: 11px; color: #6b6055; margin-top: 3px; text-transform: uppercase; letter-spacing: .3px; }
+.roster__scroll { flex: 1; min-height: 0; overflow: auto; }
+.roster__sec { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700;
+  color: #3f372c; margin: 12px 2px 7px; text-transform: uppercase; letter-spacing: .4px; }
+.roster__dot { width: 12px; height: 12px; border-radius: 50%; }
+.roster__sec--enf .roster__dot { background: #2f7d95; } .roster__sec--tec .roster__dot { background: #4f9a5e; }
+.roster__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(152px, 1fr)); gap: 8px; }
+.pcard { display: flex; align-items: center; gap: 8px; background: #fff; border-radius: 10px;
+  padding: 6px 8px; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+.pcard__av { position: relative; width: 28px; height: 28px; border-radius: 50%; display: flex;
+  align-items: center; justify-content: center; color: #fff; font-size: 10px; font-weight: 700; flex-shrink: 0; }
+.pcard__av--enf { background: #2f7d95; } .pcard__av--tec { background: #4f9a5e; }
+.pcard__turno { position: absolute; right: -2px; bottom: -2px; width: 10px; height: 10px;
+  border-radius: 50%; border: 2px solid #fff; }
+.pcard__turno--d { background: #f0a93f; } .pcard__turno--n { background: #6b6bcf; } .pcard__turno--m { background: #2bb3a3; }
+.pcard__info { min-width: 0; }
+.pcard__name { font-size: 11.5px; font-weight: 700; color: #3f372c; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pcard__sub { font-size: 9.5px; color: #6b6055; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* escala (tabela) */
+.escala__legend { display: flex; gap: 16px; justify-content: center; margin-bottom: 8px; flex-wrap: wrap; }
+.leg { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #4a4034; }
+.leg__chip { width: 22px; height: 18px; border-radius: 4px; }
+.escala__scroll { flex: 1; min-height: 0; overflow: auto; border: 1px solid #e0d8c8; border-radius: 8px; background: #fff; }
+table.escala { border-collapse: collapse; width: 100%; font-size: 10px; }
+.escala th { position: sticky; top: 0; background: #5f5446; color: #fff; font-weight: 700;
+  padding: 5px 4px; font-size: 10px; z-index: 1; white-space: nowrap; }
+.escala th.th--l { text-align: left; }
+.escala td { padding: 2px 5px; border-bottom: 1px solid #f1ede4; color: #3f372c; }
+.escala .td--c { text-align: center; }
+.escala .td--name { font-weight: 600; white-space: nowrap; }
+.escala .td--h { font-weight: 700; text-align: center; }
+.escala__group td { background: #ece2cf; font-weight: 800; font-size: 9.5px; color: #5f5446;
+  text-transform: uppercase; letter-spacing: .3px; padding: 4px 6px; }
+.escala .cell { text-align: center; font-weight: 700; font-size: 9.5px; }
+.cell--d { background: #fce3b3; } .cell--n { background: #d7d7f3; }
+.cell--m { background: #bfe6df; } .cell--f { background: #f1f1f1; color: #b5b0a8; }
+
 /* ------------------------------- Tooltip --------------------------------- */
 .tooltip {
   position: absolute;
