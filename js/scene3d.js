@@ -246,13 +246,13 @@
     sphere(px + 0.045, pz - s * 0.153, 0.012, 0x2c2420, 1.332);
     blob(px - 0.05, pz - s * 0.15, 0.024, hair, 1.368, 1.2, 0.35, 0.5);
     blob(px + 0.05, pz - s * 0.15, 0.024, hair, 1.368, 1.2, 0.35, 0.5);
-    // máscara cirúrgica: corpo (concha) + peça sobre o nariz + 2 pregas + alças
-    blob(px, pz - s * 0.115, 0.11, mcol, 1.19, 1.06, 1.02, 0.6);
-    blob(px, pz - s * 0.125, 0.07, mcol, 1.278, 1.0, 0.5, 0.5);
-    limb(px - 0.085, 1.16, pz - s * 0.185, px + 0.085, 1.16, pz - s * 0.185, 0.007, mline);
-    limb(px - 0.08, 1.225, pz - s * 0.19, px + 0.08, 1.225, pz - s * 0.19, 0.007, mline);
-    limb(px - 0.09, 1.305, pz - s * 0.05, px - 0.12, 1.31, pz + s * 0.05, 0.012, mcol);
-    limb(px + 0.09, 1.305, pz - s * 0.05, px + 0.12, 1.31, pz + s * 0.05, 0.012, mcol);
+    // máscara cirúrgica retangular (quadrada) sobre nariz/boca + pregas + alças
+    plank(px, pz - s * 0.16, 0.2, 0.05, 0.17, mcol, 1.22);
+    limb(px - 0.09, 1.165, pz - s * 0.186, px + 0.09, 1.165, pz - s * 0.186, 0.008, mline);
+    limb(px - 0.09, 1.225, pz - s * 0.186, px + 0.09, 1.225, pz - s * 0.186, 0.008, mline);
+    limb(px - 0.09, 1.282, pz - s * 0.186, px + 0.09, 1.282, pz - s * 0.186, 0.008, mline);
+    limb(px - 0.1, 1.27, pz - s * 0.08, px - 0.12, 1.29, pz + s * 0.05, 0.012, mcol);
+    limb(px + 0.1, 1.27, pz - s * 0.08, px + 0.12, 1.29, pz + s * 0.05, 0.012, mcol);
     // braços (ombro -> cotovelo -> mãos) segurando a prancheta
     limb(px - 0.16, 1.0, pz - s * 0.02, px - 0.18, 0.84, pz - s * 0.24, 0.05, scrub);
     limb(px - 0.18, 0.84, pz - s * 0.24, px - 0.06, 0.82, pz - s * 0.42, 0.045, skin);
