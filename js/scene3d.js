@@ -236,10 +236,17 @@
     // cabelo (calota) + rabo de cavalo
     sphere(px, pz + 0.04, 0.14, hair, 1.33);
     limb(px, 1.33, pz + 0.12, px, 0.97, pz + 0.17, 0.05, hair);
+    // olhos + sobrancelhas (acima da máscara)
+    sphere(px - 0.045, pz - 0.145, 0.02, 0xffffff, 1.332);
+    sphere(px + 0.045, pz - 0.145, 0.02, 0xffffff, 1.332);
+    sphere(px - 0.045, pz - 0.152, 0.012, 0x2c2420, 1.332);
+    sphere(px + 0.045, pz - 0.152, 0.012, 0x2c2420, 1.332);
+    blob(px - 0.05, pz - 0.15, 0.024, hair, 1.368, 1.2, 0.35, 0.5);
+    blob(px + 0.05, pz - 0.15, 0.024, hair, 1.368, 1.2, 0.35, 0.5);
     // máscara cirúrgica (concha sobre nariz/boca) + alças até as orelhas
-    blob(px, pz - 0.12, 0.105, mask, 1.235, 1.0, 0.95, 0.6);
-    limb(px - 0.09, 1.275, pz - 0.07, px - 0.12, 1.31, pz + 0.04, 0.012, mask);
-    limb(px + 0.09, 1.275, pz - 0.07, px + 0.12, 1.31, pz + 0.04, 0.012, mask);
+    blob(px, pz - 0.115, 0.1, mask, 1.2, 1.0, 0.92, 0.6);
+    limb(px - 0.085, 1.235, pz - 0.06, px - 0.12, 1.3, pz + 0.04, 0.012, mask);
+    limb(px + 0.085, 1.235, pz - 0.06, px + 0.12, 1.3, pz + 0.04, 0.012, mask);
     // braços (ombro -> cotovelo -> mãos) segurando a prancheta
     limb(px - 0.16, 1.0, pz - 0.02, px - 0.18, 0.84, pz - 0.24, 0.05, scrub);
     limb(px - 0.18, 0.84, pz - 0.24, px - 0.06, 0.82, pz - 0.42, 0.045, skin);
@@ -329,12 +336,12 @@
     var nC = Math.max(2, Math.floor((r.w - 0.8) / 1.4));
     for (i = 0; i < nC; i++) {
       var cxp = r.x + 0.9 + i * 1.4;
-      if (i === 0) continue;                                            // 1ª cadeira fica p/ a enfermeira
-      fb(cxp - 0.21, r.y + 1.3, 0.42, 0.42, 0.46, 0x6b88a6, 0.24);      // assento
-      fb(cxp - 0.21, r.y + 1.62, 0.42, 0.1, 0.52, 0x5d7793, 0.52);      // encosto
+      fb(cxp - 0.21, r.y + 1.32, 0.42, 0.44, 0.46, 0x6b88a6, 0.24);     // assento
+      fb(cxp - 0.21, r.y + 1.66, 0.42, 0.1, 0.56, 0x5d7793, 0.55);      // encosto
+      fb(cxp - 0.03, r.y + 1.5, 0.06, 0.06, 0.24, 0x55606e, 0.12);      // coluna/base
     }
     // enfermeira sentada na 1ª cadeira (livre dos monitores)
-    nurse3D(r.x + 0.9, r.y + 1.5);
+    nurse3D(r.x + 0.9, r.y + 1.52);
   }
   function fUtility(r) {
     fb(r.x + 0.25, r.y + 0.3, r.w - 0.5, 0.55, 0.9, 0xe7ddc9, 0.48);
