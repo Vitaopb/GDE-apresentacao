@@ -188,6 +188,32 @@
     fb(px + 0.22, pz - 0.28, 0.1, 0.5, 0.52, arm, 0.32);              // braço dir
   }
 
+  // enfermeira sentada, com máscara e prancheta — de frente p/ o norte (z menor)
+  function nurse3D(px, pz) {
+    var scrub = 0x3f93a8, skin = 0xe7b58e, hair = 0x4f3a2c, mask = 0xe6eef4, board = 0xcdb98f;
+    // pernas: coxas p/ frente + canelas p/ baixo
+    fb(px - 0.21, pz - 0.42, 0.42, 0.42, 0.16, scrub, 0.54);
+    fb(px - 0.19, pz - 0.5, 0.16, 0.14, 0.46, scrub, 0.23);
+    fb(px + 0.03, pz - 0.5, 0.16, 0.14, 0.46, scrub, 0.23);
+    // tronco + ombros
+    fb(px - 0.22, pz - 0.04, 0.44, 0.3, 0.62, scrub, 0.85);
+    fb(px - 0.27, pz - 0.02, 0.54, 0.24, 0.14, scrub, 1.1);
+    // pescoço + cabeça + cabelo
+    cyl(px, pz, 0.05, 0.1, skin, 1.2);
+    sphere(px, pz - 0.01, 0.14, skin, 1.34);
+    sphere(px, pz + 0.06, 0.155, hair, 1.39);
+    // máscara na frente do rosto
+    fb(px - 0.09, pz - 0.17, 0.18, 0.06, 0.12, mask, 1.29);
+    // braços p/ frente segurando a prancheta
+    fb(px - 0.29, pz - 0.46, 0.1, 0.4, 0.1, scrub, 0.88);
+    fb(px + 0.19, pz - 0.46, 0.1, 0.4, 0.1, scrub, 0.88);
+    // prancheta (apoio + tábua + papel + presilha)
+    fb(px - 0.17, pz - 0.5, 0.34, 0.06, 0.04, board, 0.86);
+    fb(px - 0.16, pz - 0.52, 0.32, 0.03, 0.42, board, 1.04);
+    fb(px - 0.13, pz - 0.535, 0.26, 0.012, 0.34, 0xffffff, 1.05);
+    fb(px - 0.07, pz - 0.54, 0.14, 0.02, 0.05, 0x8a8f96, 1.24);
+  }
+
   function buildFurniture(r) {
     var f = r.furnish; if (!f) return;
     var t = f.type;
@@ -266,9 +292,12 @@
     var nC = Math.max(2, Math.floor((r.w - 0.8) / 1.4));
     for (i = 0; i < nC; i++) {
       var cxp = r.x + 0.9 + i * 1.4;
+      if (i === 0) continue;                                            // 1ª cadeira fica p/ a enfermeira
       fb(cxp - 0.21, r.y + 1.3, 0.42, 0.42, 0.46, 0x6b88a6, 0.24);      // assento
       fb(cxp - 0.21, r.y + 1.62, 0.42, 0.1, 0.52, 0x5d7793, 0.52);      // encosto
     }
+    // enfermeira sentada na 1ª cadeira (livre dos monitores)
+    nurse3D(r.x + 0.9, r.y + 1.5);
   }
   function fUtility(r) {
     fb(r.x + 0.25, r.y + 0.3, r.w - 0.5, 0.55, 0.9, 0xe7ddc9, 0.48);
