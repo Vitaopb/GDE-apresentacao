@@ -59,7 +59,7 @@
     /* ===== Topo: alas de internação (mais altas, com baias) ============== */
     { id: 'quarto-crianca', name: 'Quarto de Criança', category: 'internacao',
       x: 9, y: 0, w: 7.5, h: 12, area: 72, beds: '8 leitos',
-      furnish: { type: 'beds', count: 8, color: 'blue', chairs: true } },
+      furnish: { type: 'beds', count: 8, color: 'blue', chairs: true, staff: true } },
     { id: 'enf-crianca', name: 'Enfermaria de Criança', category: 'internacao',
       x: 16.5, y: 0, w: 8, h: 12, area: 60, beds: '12 leitos',
       furnish: { type: 'beds', count: 12, color: 'blue' } },

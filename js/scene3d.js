@@ -246,16 +246,6 @@
     // cabelo (calota) + rabo de cavalo (atrás)
     sphere(px, pz + s * 0.04, 0.14, hair, 1.33);
     limb(px, 1.33, pz + s * 0.12, px, 0.97, pz + s * 0.17, 0.05, hair);
-    // olhos + sobrancelhas (acima da máscara)
-    sphere(px - 0.045, pz - s * 0.145, 0.02, 0xffffff, 1.332);
-    sphere(px + 0.045, pz - s * 0.145, 0.02, 0xffffff, 1.332);
-    sphere(px - 0.045, pz - s * 0.153, 0.012, 0x2c2420, 1.332);
-    sphere(px + 0.045, pz - s * 0.153, 0.012, 0x2c2420, 1.332);
-    blob(px - 0.05, pz - s * 0.15, 0.024, hair, 1.368, 1.2, 0.35, 0.5);
-    blob(px + 0.05, pz - s * 0.15, 0.024, hair, 1.368, 1.2, 0.35, 0.5);
-    // narizinho + boca sorridente (sem máscara)
-    sphere(px, pz - s * 0.168, 0.02, skin, 1.272);                       // nariz
-    smileMesh(px, pz - s * 0.158, 1.232, 0.042, 0x9c554d);               // sorriso
     // braços (ombro -> cotovelo -> mãos) segurando a prancheta
     limb(px - 0.16, 1.0, pz - s * 0.02, px - 0.18, 0.84, pz - s * 0.24, 0.05, scrub);
     limb(px - 0.18, 0.84, pz - s * 0.24, px - 0.06, 0.82, pz - s * 0.42, 0.045, skin);
@@ -265,6 +255,54 @@
     plank(px, pz - s * 0.36, 0.3, 0.34, 0.03, board, 0.9, s * 0.7);
     plank(px, pz - s * 0.345, 0.25, 0.28, 0.012, 0xfdfdfd, 0.918, s * 0.7);
     plank(px, pz - s * 0.47, 0.13, 0.05, 0.03, 0x8a8f96, 0.955, s * 0.7);
+  }
+
+  // paletas p/ pacientes/bebês (variar tom de pele e manta)
+  var PSKIN = [0xe8b58c, 0xd49a6b, 0xc0894f, 0xf0c39a];
+  var BABYCOL = [0xf7c6d2, 0xbfd9f0, 0xfae9b0, 0xc9ecd4];
+
+  // bebê enroladinho deitado no berço (px,pz = centro do berço)
+  function baby3D(px, pz, v) {
+    var skin = PSKIN[v % PSKIN.length], blanket = BABYCOL[v % BABYCOL.length];
+    blob(px, pz, 0.15, blanket, 0.5, 1.0, 0.55, 1.25);                  // corpinho sob a manta
+    sphere(px, pz - 0.17, 0.06, skin, 0.53);                            // cabecinha
+  }
+
+  // paciente deitado sob o cobertor (bx,bz = canto da cama; bw,bd = tamanho)
+  function patient3D(bx, bz, bw, bd, headTop, hex, v) {
+    var skin = PSKIN[v % PSKIN.length], cxb = bx + bw / 2;
+    var z0 = headTop ? bz + 0.34 : bz + 0.1;
+    fb(cxb - bw * 0.32, z0, bw * 0.64, bd - 0.44, 0.16, hex, 0.63);     // corpo sob o cobertor
+    var hz = headTop ? bz + 0.17 : bz + bd - 0.17;
+    sphere(cxb, hz, 0.082, skin, 0.71);                                 // cabeça no travesseiro
+  }
+
+  // enfermeira EM PÉ (px,pz = pés); facing 'north'/'south'; variant varia cabelo/pele
+  function nurseStanding3D(px, pz, facing, variant) {
+    var s = facing === 'south' ? -1 : 1;
+    var HAIR = [0x4a3526, 0x2a211c, 0x70512f], SKINS = [0xe8b58c, 0xd49a6b, 0xc0894f];
+    var v = (variant || 0) % 3;
+    var scrub = 0x3f93a8, scrub2 = 0x32788b, skin = SKINS[v], hair = HAIR[v], shoe = 0x4a4a4a;
+    // pernas + sapatos
+    limb(px - 0.09, 0.92, pz, px - 0.09, 0.04, pz, 0.085, scrub2);
+    limb(px + 0.09, 0.92, pz, px + 0.09, 0.04, pz, 0.085, scrub2);
+    sphere(px - 0.09, pz - s * 0.05, 0.08, shoe, 0.05);
+    sphere(px + 0.09, pz - s * 0.05, 0.08, shoe, 0.05);
+    // quadril + tronco + busto + ombros
+    sphere(px, pz, 0.145, scrub, 0.94);
+    limb(px, 0.95, pz, px, 1.5, pz - s * 0.02, 0.14, scrub);
+    sphere(px, pz - s * 0.08, 0.07, scrub, 1.2);
+    limb(px - 0.17, 1.49, pz - s * 0.02, px + 0.17, 1.49, pz - s * 0.02, 0.065, scrub);
+    // braços ao longo do corpo (levemente p/ frente)
+    limb(px - 0.17, 1.47, pz - s * 0.02, px - 0.2, 1.12, pz - s * 0.06, 0.05, scrub);
+    limb(px - 0.2, 1.12, pz - s * 0.06, px - 0.19, 0.82, pz - s * 0.16, 0.045, skin);
+    limb(px + 0.17, 1.47, pz - s * 0.02, px + 0.2, 1.12, pz - s * 0.06, 0.05, scrub);
+    limb(px + 0.2, 1.12, pz - s * 0.06, px + 0.19, 0.82, pz - s * 0.16, 0.045, skin);
+    // pescoço + cabeça + cabelo + rabo de cavalo
+    cyl(px, pz - s * 0.02, 0.045, 0.1, skin, 1.6);
+    sphere(px, pz - s * 0.03, 0.13, skin, 1.74);
+    sphere(px, pz + s * 0.04, 0.145, hair, 1.78);
+    limb(px, 1.78, pz + s * 0.12, px, 1.4, pz + s * 0.17, 0.05, hair);
   }
 
   function buildFurniture(r) {
@@ -290,6 +328,7 @@
       var bw1 = Math.min(1.1, r.w * 0.4), bl1 = Math.min(2.1, r.h * 0.5);
       var bxc = r.x + r.w * 0.3;
       placeBed(bxc - bw1 / 2, r.y + 0.5, bw1, bl1, hex, true);
+      patient3D(bxc - bw1 / 2, r.y + 0.5, bw1, bl1, true, hex, 0);     // paciente deitado
       if (f.iso) {
         var bx = r.x + r.w - 1.7;
         fb(bx - 0.05, r.y + 0.25, 0.06, r.h - 0.5, 1.7, 0xe9e9ee, 0.85);   // parede do WC
@@ -304,13 +343,17 @@
     for (i = 0; i < cols && placed < n; i++, placed++) {
       var ct = r.x + i * slot + slot / 2;
       placeBed(ct - bw / 2, r.y + 0.45, bw, bl, hex, true);
+      if (i % 2 === 0) patient3D(ct - bw / 2, r.y + 0.45, bw, bl, true, hex, i);  // alguns ocupados
       if (f.chairs) poltrona(ct, r.y + 0.45 + bl + 0.5, true);       // poltrona ao pé, olhando p/ a cama (norte)
     }
     for (i = 0; i < cols && placed < n; i++, placed++) {
       var cb = r.x + i * slot + slot / 2;
       placeBed(cb - bw / 2, r.y + r.h - 0.45 - bl, bw, bl, hex, false);
+      if (i % 2 === 1) patient3D(cb - bw / 2, r.y + r.h - 0.45 - bl, bw, bl, false, hex, i + 1);
       if (f.chairs) poltrona(cb, r.y + r.h - 0.45 - bl - 0.5, false); // olhando p/ a cama (sul)
     }
+    // enfermeira em pé no corredor central (só nos quartos)
+    if (f.staff) nurseStanding3D(r.x + r.w * 0.6, r.y + r.h * 0.5, 'north', 0);
   }
 
   function fCribs(r, f) {
@@ -318,9 +361,13 @@
     var cw = r.w / cols, ch = (r.h * 0.6) / rows;
     var bw = Math.min(1.15, cw * 0.6), bl = Math.min(1.35, ch * 0.7);
     for (j = 0; j < rows; j++) for (i = 0; i < cols && k < n; i++, k++) {
-      crib3D(r.x + i * cw + (cw - bw) / 2, r.y + 0.4 + j * ch + (ch - bl) / 2, bw, bl);
+      var bxc = r.x + i * cw + (cw - bw) / 2, bzc = r.y + 0.4 + j * ch + (ch - bl) / 2;
+      crib3D(bxc, bzc, bw, bl);
+      if (k % 2 === 0) baby3D(bxc + bw / 2, bzc + bl / 2, k);          // bebê em alguns berços
     }
-    fb(r.x + 0.5, r.y + r.h - 1.0, r.w - 1.0, 0.6, 0.85, 0xe7ddc9, 0.42);
+    fb(r.x + 0.5, r.y + r.h - 1.0, r.w - 1.0, 0.6, 0.85, 0xe7ddc9, 0.42);  // bancada
+    // enfermeira em pé cuidando dos lactentes
+    nurseStanding3D(r.x + r.w * 0.5, r.y + r.h - 1.7, 'north', 1);
   }
 
   function fStation(r) {
