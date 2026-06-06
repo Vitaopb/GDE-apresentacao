@@ -45,6 +45,12 @@
       slides.forEach(function (sl) { if (sl !== s) TeamRender.reset(sl); });
       if (s.querySelector('.whiteboard')) TeamRender.play(s);
     }
+
+    // chuva de confetes no slide final
+    if (global.Confetti) {
+      if (s.getAttribute('data-slide') === 'final') Confetti.start();
+      else Confetti.stop();
+    }
   }
 
   function init() {
