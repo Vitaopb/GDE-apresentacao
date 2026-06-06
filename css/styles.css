@@ -30,50 +30,90 @@ html, body {
 
 /* ------------------------------- Capa ------------------------------------ */
 .cover {
+  position: relative;
   height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  background: linear-gradient(135deg, #0f766e 0%, #0d9488 55%, #14b8a6 100%);
   color: #fff;
   padding: 40px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0b5e57 0%, #0d9488 42%, #14b8a6 72%, #2dd4bf 100%);
+  background-size: 220% 220%;
+  animation: coverGradient 16s ease infinite;
+}
+@keyframes coverGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ---- decoração flutuante (bolhas + cruzes) ---- */
+.cover__deco { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+.cover__deco .bub {
+  position: absolute; bottom: -140px; border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.5), rgba(255,255,255,.07));
+  animation: floatUp linear infinite;
+}
+.cover__deco .cross {
+  position: absolute; bottom: -80px; color: rgba(255,255,255,.18); font-weight: 800;
+  animation: floatUp linear infinite;
+}
+@keyframes floatUp {
+  0%   { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+  12%  { opacity: 1; }
+  88%  { opacity: .85; }
+  100% { transform: translateY(-118vh) translateX(46px) rotate(150deg); opacity: 0; }
+}
+.bub.b1 { left: 8%;  width: 90px;  height: 90px;  animation-duration: 17s; animation-delay: 0s; }
+.bub.b2 { left: 22%; width: 46px;  height: 46px;  animation-duration: 13s; animation-delay: 4s; }
+.bub.b3 { left: 42%; width: 130px; height: 130px; animation-duration: 23s; animation-delay: 2s; }
+.bub.b4 { left: 63%; width: 58px;  height: 58px;  animation-duration: 15s; animation-delay: 6s; }
+.bub.b5 { left: 78%; width: 104px; height: 104px; animation-duration: 19s; animation-delay: 1s; }
+.bub.b6 { left: 91%; width: 38px;  height: 38px;  animation-duration: 12s; animation-delay: 3s; }
+.cross.x1 { left: 15%; font-size: 36px; animation-duration: 21s; animation-delay: 2s; }
+.cross.x2 { left: 55%; font-size: 26px; animation-duration: 16s; animation-delay: 5s; }
+.cross.x3 { left: 73%; font-size: 46px; animation-duration: 25s; animation-delay: 0s; }
+.cross.x4 { left: 34%; font-size: 22px; animation-duration: 14s; animation-delay: 7s; }
+
+/* conteúdo acima da decoração (sem mexer no position:absolute da dica) */
+.cover__badge, .cover__inst, .cover__title, .cover__line, .cover__sub { position: relative; z-index: 1; }
+
+/* ---- entradas animadas (reexecutam ao voltar p/ a capa) ---- */
+.cover__badge, .cover__inst, .cover__title, .cover__line, .cover__sub, .cover__hint { opacity: 0; }
+.slide--active .cover__badge { animation: badgeIn .8s cubic-bezier(.2,1.4,.4,1) .05s forwards, bob 3.2s ease-in-out 1s infinite; }
+.slide--active .cover__inst  { animation: fadeUp .8s ease-out .35s forwards; }
+.slide--active .cover__title { animation: fadeUp .9s cubic-bezier(.2,.7,.2,1) .6s forwards; }
+.slide--active .cover__line  { animation: drawLine .7s ease-out 1.2s forwards; }
+.slide--active .cover__sub   { animation: fadeUp .8s ease-out 1.45s forwards; }
+.slide--active .cover__hint  { animation: fadeUp .6s ease-out 2s forwards, pulse 1.9s ease-in-out 2.7s infinite; }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes drawLine { from { opacity: 0; transform: scaleX(0); } to { opacity: 1; transform: scaleX(1); } }
+@keyframes badgeIn { from { opacity: 0; transform: scale(.3) translateY(-10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+@keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+
+.cover__badge {
+  font-size: 3.2rem; line-height: 1; margin-bottom: 14px;
+  filter: drop-shadow(0 6px 12px rgba(0,0,0,.25));
 }
 .cover__inst {
-  font-size: 1.05rem;
-  font-weight: 600;
-  letter-spacing: .5px;
-  opacity: .92;
-  margin-bottom: 22px;
-  text-transform: uppercase;
+  font-size: 1.05rem; font-weight: 600; letter-spacing: .5px;
+  margin-bottom: 22px; text-transform: uppercase;
 }
 .cover__title {
-  font-size: clamp(1.8rem, 4.5vw, 3.4rem);
-  font-weight: 800;
-  line-height: 1.12;
-  max-width: 16ch;
-  margin: 0;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, .15);
+  font-size: clamp(1.8rem, 4.5vw, 3.4rem); font-weight: 800; line-height: 1.12;
+  max-width: 16ch; margin: 0; text-shadow: 0 4px 18px rgba(0, 0, 0, .25);
 }
 .cover__line {
-  width: 90px; height: 4px;
-  background: rgba(255, 255, 255, .85);
-  border-radius: 2px;
-  margin: 26px 0 18px;
+  width: 90px; height: 4px; background: rgba(255, 255, 255, .9);
+  border-radius: 2px; margin: 26px 0 18px; transform-origin: center;
 }
-.cover__sub {
-  font-size: 1.05rem;
-  opacity: .92;
-}
-.cover__hint {
-  position: absolute;
-  bottom: 40px;
-  font-size: .85rem;
-  opacity: .8;
-  animation: pulse 1.8s ease-in-out infinite;
-}
-@keyframes pulse { 0%,100%{opacity:.45;} 50%{opacity:.95;} }
+.cover__sub { font-size: 1.05rem; }
+.cover__hint { position: absolute; z-index: 1; bottom: 40px; font-size: .85rem; }
+@keyframes pulse { 0%,100% { opacity: .45; } 50% { opacity: .95; } }
 .slide__title {
   position: absolute;
   top: 14px; left: 50%;
