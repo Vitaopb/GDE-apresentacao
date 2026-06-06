@@ -338,6 +338,51 @@ table.escala { border-collapse: collapse; width: 100%; font-size: 10px; }
 .cell--d { background: #fce3b3; } .cell--n { background: #d7d7f3; }
 .cell--m { background: #bfe6df; } .cell--f { background: #f1f1f1; color: #b5b0a8; }
 
+/* --------------- Quadro branco (Equipe / Escala) na maquete 3D ----------- */
+.whiteboard {
+  position: absolute;
+  top: 6%; left: 50%; transform: translateX(-50%);
+  width: 82%; height: 86%;
+  background: #fcfdff;
+  border: 14px solid #d7dde3;
+  border-radius: 10px;
+  box-shadow: 0 18px 46px rgba(0, 0, 0, .42), inset 0 0 40px rgba(170, 185, 200, .12);
+  padding: 14px 30px 20px;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+.whiteboard::after {                  /* bandeja de canetas */
+  content: ''; position: absolute; left: 5%; right: 5%; bottom: -20px; height: 14px;
+  background: linear-gradient(#cfd5db, #b3bac1); border-radius: 0 0 8px 8px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, .3);
+}
+.wb-title {
+  font-family: 'Caveat', cursive; font-size: clamp(28px, 3.4vw, 44px); font-weight: 700;
+  color: #1f6f8b; text-align: center; margin-bottom: 4px;
+  border-bottom: 2px dashed #d2d9e0; padding-bottom: 4px;
+}
+.wb-body { flex: 1; overflow: hidden; padding-top: 6px; }
+.wb-count { font-family: 'Caveat', cursive; font-size: 25px; color: #b06a2c; margin-bottom: 2px; }
+.wb-group {
+  font-family: 'Caveat', cursive; font-size: clamp(20px, 2.2vw, 28px); font-weight: 700;
+  color: #c0563b; margin: 7px 0 1px;
+}
+.wb-group--enf { color: #1f6f8b; } .wb-group--tec { color: #3a7d44; }
+.wb-list { columns: 4; column-gap: 24px; margin-bottom: 2px; }
+.wb-name {
+  display: block; font-family: 'Caveat', cursive; font-size: clamp(15px, 1.6vw, 21px);
+  font-weight: 500; line-height: 1.26; color: #34404d; break-inside: avoid;
+}
+.wb-enf { color: #1f5e80; } .wb-tec { color: #356b3e; }
+
+/* efeito de "escrita": revela da esquerda p/ a direita */
+.wb-write { opacity: 0; }
+.wb-write.wb-in { animation: wbWrite .22s ease-out forwards; }
+@keyframes wbWrite {
+  from { opacity: 0; clip-path: inset(0 100% 0 0); }
+  to   { opacity: 1; clip-path: inset(0 0 0 0); }
+}
+
 /* ------------------------------- Tooltip --------------------------------- */
 .tooltip {
   position: absolute;

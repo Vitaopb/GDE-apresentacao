@@ -39,6 +39,12 @@
     } else if (canvas) {
       canvas.style.display = 'none';
     }
+
+    // quadros brancos: reinicia os outros e "escreve" o atual
+    if (global.TeamRender) {
+      slides.forEach(function (sl) { if (sl !== s) TeamRender.reset(sl); });
+      if (s.querySelector('.whiteboard')) TeamRender.play(s);
+    }
   }
 
   function init() {
