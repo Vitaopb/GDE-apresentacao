@@ -368,7 +368,10 @@ table.escala { border-collapse: collapse; width: 100%; font-size: 10px; }
   color: #c0563b; margin: 7px 0 1px;
 }
 .wb-group--enf { color: #1f6f8b; } .wb-group--tec { color: #3a7d44; }
+.wb-group--folga { color: #7a6e97; }
 .wb-list { columns: 4; column-gap: 24px; margin-bottom: 2px; }
+.wb-list--folga { columns: 6; }
+.wb-name.wb-folga { color: #9a9aa6; font-size: clamp(14px, 1.4vw, 18px); }
 .wb-name {
   display: block; font-family: 'Caveat', cursive; font-size: clamp(15px, 1.6vw, 21px);
   font-weight: 500; line-height: 1.26; color: #34404d; break-inside: avoid;

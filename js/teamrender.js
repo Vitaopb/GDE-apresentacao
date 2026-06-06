@@ -38,15 +38,16 @@
     if (!body) return;
     body.innerHTML = '';
     var work = TEAM.filter(function (p) { return p.dias[d] && p.dias[d] !== 'F'; });
+    var folga = TEAM.filter(function (p) { return p.dias[d] === 'F'; });
     var groups = [
       ['Diurno — plantão', work.filter(function (p) { return p.dias[d] === 'D'; })],
       ['Noturno — plantão', work.filter(function (p) { return p.dias[d] === 'N'; })],
       ['Diaristas', work.filter(function (p) { return p.dias[d] === 'M'; })]
     ];
-    body.appendChild(write('div', 'wb-count', work.length + ' profissionais de plantão'));
+    body.appendChild(write('div', 'wb-count', work.length + ' de plantão · ' + folga.length + ' de folga'));
     groups.forEach(function (g) {
       if (!g[1].length) return;
-      body.appendChild(write('div', 'wb-group', g[0] + ' (' + g[1].length + ')'));
+      body.appendChild(write('div', 'wb-group', '✔ ' + g[0] + ' (' + g[1].length + ')'));
       var list = el('div', 'wb-list');
       g[1].forEach(function (p) {
         list.appendChild(write('span', 'wb-name wb-' + p.cat,
@@ -54,6 +55,12 @@
       });
       body.appendChild(list);
     });
+    if (folga.length) {
+      body.appendChild(write('div', 'wb-group wb-group--folga', '✦ De folga (' + folga.length + ')'));
+      var fl = el('div', 'wb-list wb-list--folga');
+      folga.forEach(function (p) { fl.appendChild(write('span', 'wb-name wb-folga', p.nome)); });
+      body.appendChild(fl);
+    }
   }
 
   /* --------------------------- efeito de escrita ------------------------- */
