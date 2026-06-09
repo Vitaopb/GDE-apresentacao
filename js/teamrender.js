@@ -48,8 +48,8 @@
 
     var thead = el('thead'), hr = el('tr');
     hr.appendChild(el('th', 'gx gx--name', 'Colaborador'));
-    hr.appendChild(el('th', 'gx', 'Função'));
-    hr.appendChild(el('th', 'gx', 'Horário'));
+    hr.appendChild(el('th', 'gx gx--func', 'Função'));
+    hr.appendChild(el('th', 'gx gx--hor', 'Horário'));
     DAYS.forEach(function (d) {
       hr.appendChild(el('th', 'gd' + (d.we ? ' gd--we' : ''), '<small>' + d.wd.charAt(0) + '</small>' + d.n));
     });

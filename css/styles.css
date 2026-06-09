@@ -429,15 +429,15 @@ table.escala { border-collapse: collapse; width: 100%; font-size: 10px; }
 
 /* ------------------ Slides "folha": Equipe e Escala mensal --------------- */
 .slide--sheet { background: #eaf2ed; }
-.sheet { height: 100vh; display: flex; flex-direction: column; padding: 16px 24px 14px; }
-.sheet__head { text-align: center; margin-bottom: 10px; }
-.sheet__title { margin: 0; font-size: clamp(18px, 2.2vw, 24px); font-weight: 800; color: #0b4d36; }
-.sheet__sub { margin-top: 4px; font-size: 13px; color: #4a6b5c; }
+.sheet { height: 100vh; display: flex; flex-direction: column; padding: 18px 30px 16px; }
+.sheet__head { text-align: center; margin-bottom: 12px; }
+.sheet__title { margin: 0; font-size: clamp(24px, 2.8vw, 36px); font-weight: 800; color: #0b4d36; letter-spacing: .2px; }
+.sheet__sub { margin-top: 5px; font-size: clamp(13px, 1.3vw, 17px); color: #4a6b5c; }
 .sheet__sub b { color: #0b4d36; }
 .lg { display: inline-block; width: 18px; height: 16px; line-height: 16px; text-align: center;
   border-radius: 3px; font-size: 10px; font-weight: 800; vertical-align: middle; }
 .lg--t { background: #bfe6c8; color: #1d6b39; } .lg--f { background: #e7e7ea; color: #9a9aa6; }
-.sheet__body { flex: 1; min-height: 0; overflow: auto; }
+.sheet__body { flex: 1; min-height: 0; overflow: auto; scrollbar-gutter: stable both-edges; }
 
 /* Equipe — chips por turno/função */
 .team-turno { margin-bottom: 12px; }
@@ -452,20 +452,22 @@ table.escala { border-collapse: collapse; width: 100%; font-size: 10px; }
 .team-chip--enf { border-left-color: #2f7d95; } .team-chip--tec { border-left-color: #4f9a5e; }
 
 /* Escala — tabela mensal compacta */
-.grid { border-collapse: collapse; width: 100%; font-size: 10px; }
-.grid th, .grid td { border: 1px solid #dfe6e1; }
-.grid thead th { position: sticky; top: 0; z-index: 1; background: #0b4d36; color: #fff; font-weight: 700; padding: 3px 2px; }
-.grid .gx { text-align: left; padding: 5px 7px; font-size: 11px; }
-.grid .gx--name { width: 130px; }
-.grid .gd { width: 30px; text-align: center; line-height: 1.05; }
-.grid .gd small { display: block; font-size: 7px; opacity: .78; font-weight: 600; }
+.grid { border-collapse: collapse; width: 100%; table-layout: fixed; font-size: 11px; }
+.grid th, .grid td { border: 1px solid #dfe6e1; overflow: hidden; }
+.grid thead th { position: sticky; top: 0; z-index: 1; background: #0b4d36; color: #fff; font-weight: 700; padding: 4px 2px; }
+.grid .gx { text-align: left; padding: 6px 8px; font-size: 12px; }
+.grid .gx--name { width: 140px; }
+.grid .gx--func { width: 102px; }
+.grid .gx--hor { width: 64px; }
+.grid .gd { text-align: center; line-height: 1.06; padding: 3px 0; }
+.grid .gd small { display: block; font-size: 8px; opacity: .8; font-weight: 600; }
 .grid .gd--we { background: #07382a; }
 .grid tbody tr:nth-child(even) { background: #f3f7f4; }
-.grid .gn { padding: 2px 7px; white-space: nowrap; font-weight: 700; font-size: 10.5px; }
+.grid .gn { padding: 2px 8px; white-space: nowrap; text-overflow: ellipsis; font-weight: 700; font-size: 11.5px; }
 .grid .gn--enf { color: #185b76; } .grid .gn--tec { color: #2f6b3c; }
-.grid .gf { padding: 2px 5px; white-space: nowrap; font-size: 9.5px; color: #5a6b62; }
-.grid .gh { padding: 2px 5px; text-align: center; white-space: nowrap; font-size: 9.5px; color: #5a6b62; }
-.grid .gc { text-align: center; font-weight: 800; font-size: 9.5px; padding: 1px; }
+.grid .gf { padding: 2px 5px; white-space: nowrap; text-overflow: ellipsis; font-size: 10px; color: #5a6b62; }
+.grid .gh { padding: 2px 4px; text-align: center; white-space: nowrap; font-size: 10px; color: #5a6b62; }
+.grid .gc { text-align: center; font-weight: 800; font-size: 11px; padding: 2px 0; }
 .grid .gc--t { background: #c5e9cd; color: #1d6b39; }
 .grid .gc--f { background: #efeff1; color: #b9b9c2; }
 .grid .gc--t.gc--we { background: #b1ddbb; }
