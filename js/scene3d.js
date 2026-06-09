@@ -19,9 +19,9 @@
 
   // cores dos pisos por categoria (mais vivas que a planta 2D, p/ dar vida ao 3D)
   var FLOOR3D = {
-    internacao: 0xbcd0e6, enfermagem: 0xbcd0e6, apoio: 0xb6dac9,
-    isolamento: 0xeec3c3, lazer: 0xefdca6, sanitario: 0xceb6ea,
-    cuidados: 0xe7b8d4, recepcao: 0xd8c8a6, circulacao: 0xd8c8a6
+    internacao: 0x6f9cc9, enfermagem: 0x6f9cc9, apoio: 0x66b08e,
+    isolamento: 0xd97f7f, lazer: 0xd4af52, sanitario: 0x9a77cc,
+    cuidados: 0xc9779f, recepcao: 0xbfa97a, circulacao: 0xbfa97a
   };
   function floorHex(cat) { return FLOOR3D[cat] || 0xe9e2d4; }
 
@@ -51,17 +51,22 @@
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     if (THREE.sRGBEncoding !== undefined) renderer.outputEncoding = THREE.sRGBEncoding;
+    if (THREE.ACESFilmicToneMapping !== undefined) {          // tom de render arquitetônico
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 0.92;
+    }
     container.appendChild(renderer.domElement);
 
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xd6dee8);
+    scene.background = new THREE.Color(0xdde3ea);
+    scene.fog = new THREE.Fog(0xdde3ea, 95, 190);   // suaviza o horizonte (estúdio)
 
     camera = new THREE.PerspectiveCamera(42, w / h, 0.1, 500);
     camera.position.set(0, 33, 31);
 
     // luz ambiente suave (céu/chão) + luz principal com sombra + preenchimento
-    scene.add(new THREE.HemisphereLight(0xeaf0f6, 0x9c8f72, 0.42));
-    var key = new THREE.DirectionalLight(0xfff0d6, 1.0);
+    scene.add(new THREE.HemisphereLight(0xeef3f8, 0xa89a80, 0.38));
+    var key = new THREE.DirectionalLight(0xfff1d8, 0.78);
     key.position.set(-26, 44, 22);
     key.castShadow = true;
     key.shadow.mapSize.set(2048, 2048);
@@ -69,7 +74,7 @@
     sc.left = -36; sc.right = 36; sc.top = 24; sc.bottom = -24; sc.near = 1; sc.far = 160;
     key.shadow.bias = -0.0004;
     scene.add(key);
-    var fill = new THREE.DirectionalLight(0xd6e2f0, 0.32);
+    var fill = new THREE.DirectionalLight(0xd6e2f0, 0.26);
     fill.position.set(28, 22, -20);
     scene.add(fill);
 
@@ -93,8 +98,16 @@
   function buildModel(data) {
     collectOpenings(data);   // vãos de porta antes de erguer as paredes
 
+    // chão de estúdio (recebe a sombra do prédio, funde com o fundo via fog)
+    var ground = new THREE.Mesh(new THREE.PlaneGeometry(420, 420),
+      new THREE.MeshStandardMaterial({ color: 0xcdd5db, roughness: 0.95, metalness: 0 }));
+    ground.rotation.x = -Math.PI / 2;
+    ground.position.y = -0.31;
+    ground.receiveShadow = true;
+    scene.add(ground);
+
     // base/laje do prédio
-    addBox(-W / 2 - 0.3, -H / 2 - 0.3, W + 0.6, H + 0.6, 0.3, mat(0xcdbfa3), -0.15, true);
+    addBox(-W / 2 - 0.3, -H / 2 - 0.3, W + 0.6, H + 0.6, 0.3, mat(0xd8d0c2), -0.15, true);
 
     data.ROOMS.forEach(function (r) {
       if (r.decorative) { addFloor(r, floorHex(r.category)); return; }   // circulação
@@ -109,7 +122,32 @@
   /* --------------------------------------------------------------------------
    * Mobiliário 3D (peças simples a partir do campo furnish de cada ambiente)
    * ------------------------------------------------------------------------*/
-  function fb(x, z, w, d, h, hex, y) { return addBox(x, z, w, d, h, mat(hex), y); }
+  // geometria de caixa com cantos arredondados (bevel) — tira o ar "quadrado"
+  var RB_CACHE = {};
+  function rboxGeo(w, d, h) {
+    var r = Math.min(0.04, w * 0.22, d * 0.22, h * 0.22);
+    if (r < 0.008) return new THREE.BoxGeometry(w, h, d);   // peças muito finas: caixa normal
+    var key = w.toFixed(3) + '|' + d.toFixed(3) + '|' + h.toFixed(3);
+    if (RB_CACHE[key]) return RB_CACHE[key];
+    var hw = w / 2 - r, hh = h / 2 - r;
+    var shape = new THREE.Shape();
+    shape.moveTo(-hw, -hh); shape.lineTo(hw, -hh); shape.lineTo(hw, hh); shape.lineTo(-hw, hh);
+    var geo = new THREE.ExtrudeGeometry(shape, {
+      depth: Math.max(0.002, d - 2 * r), bevelEnabled: true,
+      bevelThickness: r, bevelSize: r, bevelSegments: 2, curveSegments: 3
+    });
+    geo.center();
+    RB_CACHE[key] = geo;
+    return geo;
+  }
+  // caixa de mobiliário (cantos arredondados)
+  function fb(x, z, w, d, h, hex, y) {
+    var m = new THREE.Mesh(rboxGeo(w, d, h), mat(hex));
+    m.position.set(cx(x + w / 2), (y != null ? y : h / 2), cz(z + d / 2));
+    m.castShadow = true; m.receiveShadow = true;
+    scene.add(m);
+    return m;
+  }
   function bedColor(c) { return c === 'green' ? 0x9ec486 : c === 'blue' ? 0x86b3df : 0xd0d8e0; }
 
   function placeBed(x, z, w, d, hex, headTop) {
@@ -520,17 +558,38 @@
     fb(r.x + 0.15, r.y + r.h - 1.0, r.w - 0.3, 0.5, 0.6, 0xeef1f5, 0.3);
   }
 
+  // textura procedural de piso (placa 1×1 m com junta sutil)
+  var tileTex = null;
+  function getTileTexture() {
+    if (tileTex) return tileTex;
+    var c = document.createElement('canvas'); c.width = c.height = 128;
+    var g = c.getContext('2d');
+    g.fillStyle = '#ffffff'; g.fillRect(0, 0, 128, 128);
+    g.fillStyle = 'rgba(255,255,255,0.5)'; g.fillRect(3, 3, 122, 122);   // leve variação central
+    g.strokeStyle = 'rgba(70,80,92,0.18)'; g.lineWidth = 2.5;
+    g.strokeRect(0, 0, 128, 128);                                        // junta
+    tileTex = new THREE.CanvasTexture(c);
+    tileTex.wrapS = tileTex.wrapT = THREE.RepeatWrapping;
+    return tileTex;
+  }
   function addFloor(r, colorHex) {
+    var t = getTileTexture().clone();
+    t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    t.repeat.set(Math.max(1, Math.round(r.w)), Math.max(1, Math.round(r.h)));
+    t.anisotropy = renderer ? renderer.capabilities.getMaxAnisotropy() : 4;
+    t.needsUpdate = true;
     var m = new THREE.Mesh(
       new THREE.BoxGeometry(r.w, 0.08, r.h),
-      mat(colorHex)
+      new THREE.MeshStandardMaterial({ color: colorHex, map: t, roughness: 0.72, metalness: 0.03 })
     );
     m.position.set(cx(r.x + r.w / 2), 0.04, cz(r.y + r.h / 2));
     m.receiveShadow = true;
     scene.add(m);
   }
 
-  function getWallMat() { if (!wallMat) wallMat = mat(0xe3d7bd); return wallMat; }
+  var capMat = null;
+  function getCapMat() { if (!capMat) capMat = mat(0xc8c1b2); return capMat; }
+  function getWallMat() { if (!wallMat) wallMat = mat(0xf3efe7); return wallMat; }
 
   // x,z = canto (coords do plano); w = extensão em X; d = profundidade em Z; h = altura
   function addBox(x, z, w, d, h, material, y, absolute) {
@@ -576,6 +635,8 @@
       cur = g[1];
     });
     if (cur < z1) addBox(x - t / 2, cur, t, z1 - cur, h, m);
+    // tampa de corte no topo (estilo maquete de arquitetura)
+    addBox(x - (t + 0.05) / 2, z0, t + 0.05, z1 - z0, 0.035, getCapMat(), h + 0.0175);
   }
 
   // parede horizontal (z constante), de x0 a x1, abrindo vãos coincidentes
@@ -591,6 +652,8 @@
       cur = g[1];
     });
     if (cur < x1) addBox(cur, z - t / 2, x1 - cur, t, h, m);
+    // tampa de corte no topo (estilo maquete de arquitetura)
+    addBox(x0, z - (t + 0.05) / 2, x1 - x0, t + 0.05, 0.035, getCapMat(), h + 0.0175);
   }
 
   function addWalls(r) {
@@ -602,14 +665,14 @@
   }
 
   function addBuildingShell() {
-    var m = mat(0xb7a888), T = 0.25, h = WALL_H + 0.3;
+    var m = mat(0xddd5c6), T = 0.25, h = WALL_H + 0.3;
     wallH(0, 0, W, h, m, T);     // topo
     wallH(H, 0, W, h, m, T);     // base (tem a entrada principal)
     wallV(0, 0, H, h, m, T);     // esquerda
     wallV(W, 0, H, h, m, T);     // direita
   }
 
-  function mat(hex) { return new THREE.MeshStandardMaterial({ color: hex, roughness: 0.9, metalness: 0.02 }); }
+  function mat(hex) { return new THREE.MeshStandardMaterial({ color: hex, roughness: 0.74, metalness: 0.03 }); }
 
   /* --------------------------------------------------------------------------
    * Loop / resize
