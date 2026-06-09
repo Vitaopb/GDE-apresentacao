@@ -94,7 +94,7 @@
     { id: 'ban-feminino', name: 'Banheiro Acompanhante Feminino',
       short: 'Banheiro Acompanhante Feminino', category: 'sanitario',
       x: 37, y: 19, w: 5, h: 9, area: 17.28,
-      furnish: { type: 'bathroom', wc: 3, sink: 3, shower: 1 } },
+      furnish: { type: 'bathroom', wc: 3, sink: 3, shower: 1, cleaner: true } },
 
     /* ===== Centro — fileira única de apoio ===============================
        Serviços 1/Curativos 1 à esquerda (preenchendo o vazio), Posto 2 ao

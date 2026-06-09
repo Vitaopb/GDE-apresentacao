@@ -305,6 +305,37 @@
     limb(px, 1.78, pz + s * 0.12, px, 1.4, pz + s * 0.17, 0.05, hair);
   }
 
+  // auxiliar de limpeza EM PÉ, levemente inclinada, passando pano (esfregão) + balde
+  function cleaner3D(px, pz, facing) {
+    var s = facing === 'south' ? -1 : 1;
+    var uni = 0x6f8fa6, uni2 = 0x5b7689, skin = 0xe2a878, hair = 0x3a2b20, pole = 0x9aa3ad, mop = 0xdfe4e8;
+    // pernas + sapatos
+    limb(px - 0.09, 0.88, pz, px - 0.09, 0.04, pz, 0.085, uni2);
+    limb(px + 0.09, 0.88, pz, px + 0.09, 0.04, pz - s * 0.14, 0.085, uni2);
+    sphere(px - 0.09, pz - s * 0.05, 0.08, 0x444, 0.05);
+    sphere(px + 0.09, pz - s * 0.19, 0.08, 0x444, 0.05);
+    // quadril + tronco inclinado p/ frente
+    sphere(px, pz, 0.14, uni, 0.9);
+    limb(px, 0.92, pz, px, 1.38, pz - s * 0.16, 0.135, uni);
+    limb(px - 0.15, 1.34, pz - s * 0.13, px + 0.15, 1.34, pz - s * 0.13, 0.06, uni);
+    // cabeça + cabelo (preso) inclinada
+    cyl(px, pz - s * 0.18, 0.042, 0.08, skin, 1.42);
+    sphere(px, pz - s * 0.24, 0.12, skin, 1.5);
+    sphere(px, pz - s * 0.18, 0.135, hair, 1.54);
+    sphere(px, pz - s * 0.12, 0.06, hair, 1.5);                    // coque
+    // braços p/ frente-baixo segurando o cabo
+    limb(px - 0.14, 1.3, pz - s * 0.13, px - 0.04, 0.96, pz - s * 0.42, 0.045, uni);
+    limb(px + 0.14, 1.3, pz - s * 0.13, px + 0.02, 0.78, pz - s * 0.6, 0.045, uni);
+    // cabo do esfregão (das mãos até o chão, inclinado) + cabeça do esfregão no chão
+    limb(px - 0.02, 1.0, pz - s * 0.45, px + 0.02, 0.06, pz - s * 1.02, 0.025, pole);
+    fb(px - 0.2, pz - s * 1.02 - 0.13, 0.4, 0.26, 0.05, mop, 0.045);
+    // rastro de água/limpo no chão
+    fb(px - 0.26, pz - s * 1.02 - 0.16, 0.52, 0.32, 0.012, 0xcfe6ee, 0.012);
+    // baldinho ao lado
+    cyl(px - 0.55, pz - s * 0.2, 0.16, 0.34, 0xf2c14e, 0.17);
+    cyl(px - 0.55, pz - s * 0.2, 0.13, 0.06, 0xeaf2f6, 0.32);       // água
+  }
+
   function buildFurniture(r) {
     var f = r.furnish; if (!f) return;
     var t = f.type;
@@ -480,6 +511,8 @@
       }
       fb(startX + nW * ws - pt, backZ - depth, pt, depth, ph, pc, ph / 2); // fecha o último box
     }
+    // auxiliar de limpeza passando pano no centro do banheiro
+    if (f.cleaner) cleaner3D(r.x + r.w * 0.46, r.y + r.h * 0.5, 'south');
   }
   function fAnteroom(r) {
     fb(r.x + r.w / 2 - 0.25, r.y + 0.45, 0.5, 0.36, 0.85, 0xffffff, 0.42);
