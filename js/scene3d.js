@@ -326,11 +326,12 @@
     // braços p/ frente-baixo segurando o cabo
     limb(px - 0.14, 1.3, pz - s * 0.13, px - 0.04, 0.96, pz - s * 0.42, 0.045, uni);
     limb(px + 0.14, 1.3, pz - s * 0.13, px + 0.02, 0.78, pz - s * 0.6, 0.045, uni);
-    // cabo do esfregão (das mãos até o chão, inclinado) + cabeça do esfregão no chão
-    limb(px - 0.02, 1.0, pz - s * 0.45, px + 0.02, 0.06, pz - s * 1.02, 0.025, pole);
-    fb(px - 0.2, pz - s * 1.02 - 0.13, 0.4, 0.26, 0.05, mop, 0.045);
+    // cabo do rodo (das mãos até o chão, inclinado) + cabeça (lâmina branca larga)
+    limb(px - 0.02, 1.0, pz - s * 0.45, px + 0.02, 0.12, pz - s * 1.0, 0.025, pole);
+    fb(px - 0.28, pz - s * 1.0 - 0.06, 0.56, 0.12, 0.08, 0xf3f6f8, 0.1);     // cabeça do rodo
+    fb(px - 0.28, pz - s * 1.0 - 0.065, 0.56, 0.04, 0.02, 0x9aa3ad, 0.155);  // borracha do rodo
     // rastro de água/limpo no chão
-    fb(px - 0.26, pz - s * 1.02 - 0.16, 0.52, 0.32, 0.012, 0xcfe6ee, 0.012);
+    fb(px - 0.3, pz - s * 1.0 - 0.2, 0.6, 0.34, 0.012, 0xcfe6ee, 0.012);
     // baldinho ao lado
     cyl(px - 0.55, pz - s * 0.2, 0.16, 0.34, 0xf2c14e, 0.17);
     cyl(px - 0.55, pz - s * 0.2, 0.13, 0.06, 0xeaf2f6, 0.32);       // água

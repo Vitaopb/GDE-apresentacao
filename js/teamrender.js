@@ -22,7 +22,11 @@
     if (/Serviços Gerais/.test(f)) return 'Aux. Serv. Gerais';
     return f;
   }
-  function horAbbr(h) { return h.replace(/h/g, '').replace(/\s*às\s*|\s*-\s*/, '–'); }
+  function horAbbr(h) {
+    var n = h.match(/\d+/g) || [];
+    function p(x) { x = String(x); return x.length < 2 ? '0' + x : x; }
+    return n.length >= 2 ? p(n[0]) + 'h-' + p(n[1]) + 'h' : h;
+  }
 
   // monta a tabela de escala; opts.groupByTurno insere linhas-cabeçalho por turno
   function buildTable(c, people, opts) {
