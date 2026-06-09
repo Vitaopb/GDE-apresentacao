@@ -40,9 +40,7 @@ html, body {
   color: #fff;
   padding: 40px;
   overflow: hidden;
-  background: linear-gradient(135deg, #0b5e57 0%, #0d9488 42%, #14b8a6 72%, #2dd4bf 100%);
-  background-size: 220% 220%;
-  animation: coverGradient 16s ease infinite;
+  background: linear-gradient(168deg, #06382a 0%, #0b4d36 26%, #15694b 50%, #57ad8c 74%, #eef8f3 92%, #ffffff 100%);
 }
 @keyframes coverGradient {
   0% { background-position: 0% 50%; }
@@ -79,40 +77,35 @@ html, body {
 .cross.x4 { left: 34%; font-size: 22px; animation-duration: 14s; animation-delay: 7s; }
 
 /* conteúdo acima da decoração (sem mexer no position:absolute da dica) */
-.cover__badge, .cover__inst, .cover__title, .cover__line, .cover__sub { position: relative; z-index: 1; }
+.cover__inst, .cover__title, .cover__line, .cover__sub { position: relative; z-index: 1; }
 
 /* ---- entradas animadas (reexecutam ao voltar p/ a capa) ---- */
-.cover__badge, .cover__inst, .cover__title, .cover__line, .cover__sub, .cover__hint { opacity: 0; }
-.slide--active .cover__badge { animation: badgeIn .8s cubic-bezier(.2,1.4,.4,1) .05s forwards, bob 3.2s ease-in-out 1s infinite; }
-.slide--active .cover__inst  { animation: fadeUp .8s ease-out .35s forwards; }
-.slide--active .cover__title { animation: fadeUp .9s cubic-bezier(.2,.7,.2,1) .6s forwards; }
-.slide--active .cover__line  { animation: drawLine .7s ease-out 1.2s forwards; }
-.slide--active .cover__sub   { animation: fadeUp .8s ease-out 1.45s forwards; }
-.slide--active .cover__hint  { animation: fadeUp .6s ease-out 2s forwards, pulse 1.9s ease-in-out 2.7s infinite; }
+.cover__inst, .cover__title, .cover__line, .cover__sub, .cover__hint { opacity: 0; }
+.slide--active .cover__inst  { animation: fadeUp .8s ease-out .25s forwards; }
+.slide--active .cover__title { animation: fadeUp .9s cubic-bezier(.2,.7,.2,1) .5s forwards; }
+.slide--active .cover__line  { animation: drawLine .7s ease-out 1.1s forwards; }
+.slide--active .cover__sub   { animation: fadeUp .8s ease-out 1.35s forwards; }
+.slide--active .cover__hint  { animation: fadeUp .6s ease-out 1.9s forwards, pulse 1.9s ease-in-out 2.6s infinite; }
 
 @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes drawLine { from { opacity: 0; transform: scaleX(0); } to { opacity: 1; transform: scaleX(1); } }
 @keyframes badgeIn { from { opacity: 0; transform: scale(.3) translateY(-10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
 @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
 
-.cover__badge {
-  font-size: 3.2rem; line-height: 1; margin-bottom: 14px;
-  filter: drop-shadow(0 6px 12px rgba(0,0,0,.25));
-}
 .cover__inst {
-  font-size: 1.05rem; font-weight: 600; letter-spacing: .5px;
-  margin-bottom: 22px; text-transform: uppercase;
+  font-size: clamp(1.1rem, 1.7vw, 1.4rem); font-weight: 600; letter-spacing: .5px;
+  margin-bottom: 26px; text-transform: uppercase; color: #d8f3e7;
 }
 .cover__title {
-  font-size: clamp(1.8rem, 4.5vw, 3.4rem); font-weight: 800; line-height: 1.12;
-  max-width: 16ch; margin: 0; text-shadow: 0 4px 18px rgba(0, 0, 0, .25);
+  font-size: clamp(2.6rem, 7vw, 5.4rem); font-weight: 800; line-height: 1.08;
+  max-width: 18ch; margin: 0; color: #fff; text-shadow: 0 6px 26px rgba(0, 0, 0, .3);
 }
 .cover__line {
-  width: 90px; height: 4px; background: rgba(255, 255, 255, .9);
-  border-radius: 2px; margin: 26px 0 18px; transform-origin: center;
+  width: 120px; height: 5px; background: rgba(255, 255, 255, .92);
+  border-radius: 3px; margin: 32px 0 24px; transform-origin: center;
 }
-.cover__sub { font-size: 1.05rem; }
-.cover__hint { position: absolute; z-index: 1; bottom: 40px; font-size: .85rem; }
+.cover__sub { font-size: clamp(1.25rem, 3vw, 2rem); font-weight: 600; color: #f1faf6; }
+.cover__hint { position: absolute; z-index: 1; bottom: 40px; font-size: 1rem; color: #0a3d2e; }
 @keyframes pulse { 0%,100% { opacity: .45; } 50% { opacity: .95; } }
 .slide__title {
   position: absolute;
