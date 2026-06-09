@@ -1,13 +1,12 @@
 /* =============================================================================
- * teamrender.js — quadros brancos (na maquete 3D) da Equipe e da Escala,
- * com efeito de escrita (os nomes vão "sendo escritos" um a um).
- * Conteúdo a partir de window.TeamData.
+ * teamrender.js — monta o slide "Equipe" (chips por turno/função) e os slides
+ * de "Escala" (tabela mensal Diurno / Noturno) a partir de window.TeamData.
  * ===========================================================================*/
 (function (global) {
   'use strict';
 
-  var DATA = global.TeamData || { DAYS: [], TEAM: [] };
-  var TEAM = DATA.TEAM;
+  var DATA = global.TeamData || { MONTH: '', DAYS: [], TEAM: [] };
+  var DAYS = DATA.DAYS, TEAM = DATA.TEAM;
 
   function el(tag, cls, html) {
     var e = document.createElement(tag);
@@ -15,87 +14,69 @@
     if (html != null) e.innerHTML = html;
     return e;
   }
-  // elemento "escrevível" (entra com animação de escrita)
-  function write(tag, cls, text) { return el(tag, 'wb-write ' + (cls || ''), text); }
-
-  /* --------------------------- conteúdo: EQUIPE -------------------------- */
-  function buildTeam(body) {
-    if (!body) return;
-    body.innerHTML = '';
-    var enf = TEAM.filter(function (p) { return p.cat === 'enf'; });
-    var tec = TEAM.filter(function (p) { return p.cat === 'tec'; });
-    [['Enfermeiros (' + enf.length + ')', enf, 'enf'],
-     ['Técnicos de Enfermagem (' + tec.length + ')', tec, 'tec']].forEach(function (sec) {
-      body.appendChild(write('div', 'wb-group wb-group--' + sec[2], sec[0]));
-      var list = el('div', 'wb-list');
-      sec[1].forEach(function (p) { list.appendChild(write('span', 'wb-name wb-' + sec[2], p.nome)); });
-      body.appendChild(list);
-    });
+  function fAbbr(f) {
+    if (/Coordenadora/.test(f)) return 'Enf. Coordenadora';
+    if (/Rotineiro/.test(f)) return 'Enf. Rotineiro';
+    if (/Plantonista/.test(f)) return 'Enf. Plantonista';
+    return 'Téc. Enfermagem';
   }
+  function horAbbr(h) { return h.replace(/h às /, '–').replace(/h$/, ''); }  // 07h às 16h -> 07–16
 
-  /* --------------------------- conteúdo: DIA ----------------------------- */
-  function buildDay(body, d) {
-    if (!body) return;
-    body.innerHTML = '';
-    var work = TEAM.filter(function (p) { return p.dias[d] && p.dias[d] !== 'F'; });
-    var folga = TEAM.filter(function (p) { return p.dias[d] === 'F'; });
-    var groups = [
-      ['Diurno — plantão', work.filter(function (p) { return p.dias[d] === 'D'; })],
-      ['Noturno — plantão', work.filter(function (p) { return p.dias[d] === 'N'; })],
-      ['Diaristas', work.filter(function (p) { return p.dias[d] === 'M'; })]
-    ];
-    body.appendChild(write('div', 'wb-count', work.length + ' de plantão · ' + folga.length + ' de folga'));
-    groups.forEach(function (g) {
-      if (!g[1].length) return;
-      body.appendChild(write('div', 'wb-group', '✔ ' + g[0] + ' (' + g[1].length + ')'));
-      var list = el('div', 'wb-list');
-      g[1].forEach(function (p) {
-        list.appendChild(write('span', 'wb-name wb-' + p.cat,
-          p.nome + ' · ' + (p.cat === 'enf' ? 'Enf.' : 'Téc.')));
+  /* ------------------------------ Equipe -------------------------------- */
+  function renderRoster(c) {
+    if (!c) return; c.innerHTML = '';
+    [['Diurno', '☀'], ['Noturno', '☾']].forEach(function (tn) {
+      var grp = TEAM.filter(function (p) { return p.turno === tn[0]; });
+      var sec = el('div', 'team-turno');
+      sec.appendChild(el('div', 'team-turno__h', tn[1] + ' Plantão ' + tn[0] + ' <span>(' + grp.length + ')</span>'));
+      [['enf', 'Enfermeiros'], ['tec', 'Técnicos de Enfermagem']].forEach(function (ct) {
+        var ppl = grp.filter(function (p) { return p.cat === ct[0]; });
+        sec.appendChild(el('div', 'team-cat team-cat--' + ct[0], ct[1] + ' · ' + ppl.length));
+        var list = el('div', 'team-list');
+        ppl.forEach(function (p) { list.appendChild(el('span', 'team-chip team-chip--' + ct[0], p.nome)); });
+        sec.appendChild(list);
       });
-      body.appendChild(list);
+      c.appendChild(sec);
     });
-    if (folga.length) {
-      body.appendChild(write('div', 'wb-group wb-group--folga', '✦ De folga (' + folga.length + ')'));
-      var fl = el('div', 'wb-list wb-list--folga');
-      folga.forEach(function (p) { fl.appendChild(write('span', 'wb-name wb-folga', p.nome)); });
-      body.appendChild(fl);
-    }
   }
 
-  /* --------------------------- efeito de escrita ------------------------- */
-  function play(slide) {
-    var board = slide && slide.querySelector('.whiteboard');
-    if (!board) return;
-    var items = [].slice.call(board.querySelectorAll('.wb-write'));
-    if (board._timers) board._timers.forEach(clearTimeout);
-    board._timers = [];
-    items.forEach(function (it) { it.classList.remove('wb-in'); });
-    var t = 320;  // pequena espera após a transição do slide
-    items.forEach(function (it) {
-      var isHead = it.classList.contains('wb-group') || it.classList.contains('wb-title') || it.classList.contains('wb-count');
-      board._timers.push(setTimeout(function () { it.classList.add('wb-in'); }, t));
-      t += isHead ? 230 : 75;
+  /* ------------------------------ Escala -------------------------------- */
+  function renderEscala(c, turno) {
+    if (!c) return; c.innerHTML = '';
+    var ppl = TEAM.filter(function (p) { return p.turno === turno; });
+    var table = el('table', 'grid');
+
+    var thead = el('thead'), hr = el('tr');
+    hr.appendChild(el('th', 'gx gx--name', 'Colaborador'));
+    hr.appendChild(el('th', 'gx', 'Função'));
+    hr.appendChild(el('th', 'gx', 'Horário'));
+    DAYS.forEach(function (d) {
+      hr.appendChild(el('th', 'gd' + (d.we ? ' gd--we' : ''), '<small>' + d.wd.charAt(0) + '</small>' + d.n));
     });
-  }
-  // limpa (esconde) os nomes ao sair do slide, p/ reanimar ao voltar
-  function reset(slide) {
-    var board = slide && slide.querySelector('.whiteboard');
-    if (!board) return;
-    if (board._timers) board._timers.forEach(clearTimeout);
-    [].slice.call(board.querySelectorAll('.wb-write')).forEach(function (it) { it.classList.remove('wb-in'); });
+    thead.appendChild(hr); table.appendChild(thead);
+
+    var tb = el('tbody');
+    ppl.forEach(function (p) {
+      var tr = el('tr');
+      tr.appendChild(el('td', 'gn gn--' + p.cat, p.nome));
+      tr.appendChild(el('td', 'gf', fAbbr(p.funcao)));
+      tr.appendChild(el('td', 'gh', horAbbr(p.horario)));
+      p.escala.forEach(function (s, i) {
+        tr.appendChild(el('td', 'gc gc--' + s.toLowerCase() + (DAYS[i].we ? ' gc--we' : ''), s));
+      });
+      tb.appendChild(tr);
+    });
+    table.appendChild(tb);
+    c.appendChild(table);
   }
 
   function init() {
-    buildTeam(document.getElementById('wb-team'));
-    for (var d = 0; d < 7; d++) buildDay(document.getElementById('wb-day' + d), d);
-    // marca os títulos como escrevíveis também
-    [].slice.call(document.querySelectorAll('.whiteboard .wb-title')).forEach(function (t) {
-      t.classList.add('wb-write');
-    });
+    renderRoster(document.getElementById('equipe-content'));
+    renderEscala(document.getElementById('escala-diurno'), 'Diurno');
+    renderEscala(document.getElementById('escala-noturno'), 'Noturno');
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 
-  global.TeamRender = { play: play, reset: reset };
+  global.TeamRender = { renderRoster: renderRoster, renderEscala: renderEscala };
 })(window);

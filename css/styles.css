@@ -427,6 +427,50 @@ table.escala { border-collapse: collapse; width: 100%; font-size: 10px; }
   to   { opacity: 1; clip-path: inset(0 0 0 0); }
 }
 
+/* ------------------ Slides "folha": Equipe e Escala mensal --------------- */
+.slide--sheet { background: #eaf2ed; }
+.sheet { height: 100vh; display: flex; flex-direction: column; padding: 16px 24px 14px; }
+.sheet__head { text-align: center; margin-bottom: 10px; }
+.sheet__title { margin: 0; font-size: clamp(18px, 2.2vw, 24px); font-weight: 800; color: #0b4d36; }
+.sheet__sub { margin-top: 4px; font-size: 13px; color: #4a6b5c; }
+.sheet__sub b { color: #0b4d36; }
+.lg { display: inline-block; width: 18px; height: 16px; line-height: 16px; text-align: center;
+  border-radius: 3px; font-size: 10px; font-weight: 800; vertical-align: middle; }
+.lg--t { background: #bfe6c8; color: #1d6b39; } .lg--f { background: #e7e7ea; color: #9a9aa6; }
+.sheet__body { flex: 1; min-height: 0; overflow: auto; }
+
+/* Equipe — chips por turno/função */
+.team-turno { margin-bottom: 12px; }
+.team-turno__h { font-size: clamp(15px, 1.8vw, 18px); font-weight: 800; color: #0b4d36;
+  margin: 6px 0 5px; padding-bottom: 3px; border-bottom: 2px solid #cfe0d7; }
+.team-turno__h span { color: #6a8a7b; font-weight: 600; font-size: .85em; }
+.team-cat { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; margin: 7px 0 4px; }
+.team-cat--enf { color: #1f6f8b; } .team-cat--tec { color: #3a7d44; }
+.team-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.team-chip { font-size: 12.5px; padding: 4px 11px; border-radius: 14px; background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .07); border-left: 3px solid #ccc; color: #2b3a33; }
+.team-chip--enf { border-left-color: #2f7d95; } .team-chip--tec { border-left-color: #4f9a5e; }
+
+/* Escala — tabela mensal compacta */
+.grid { border-collapse: collapse; width: 100%; font-size: 10px; }
+.grid th, .grid td { border: 1px solid #dfe6e1; }
+.grid thead th { position: sticky; top: 0; z-index: 1; background: #0b4d36; color: #fff; font-weight: 700; padding: 3px 2px; }
+.grid .gx { text-align: left; padding: 5px 7px; font-size: 11px; }
+.grid .gx--name { width: 130px; }
+.grid .gd { width: 30px; text-align: center; line-height: 1.05; }
+.grid .gd small { display: block; font-size: 7px; opacity: .78; font-weight: 600; }
+.grid .gd--we { background: #07382a; }
+.grid tbody tr:nth-child(even) { background: #f3f7f4; }
+.grid .gn { padding: 2px 7px; white-space: nowrap; font-weight: 700; font-size: 10.5px; }
+.grid .gn--enf { color: #185b76; } .grid .gn--tec { color: #2f6b3c; }
+.grid .gf { padding: 2px 5px; white-space: nowrap; font-size: 9.5px; color: #5a6b62; }
+.grid .gh { padding: 2px 5px; text-align: center; white-space: nowrap; font-size: 9.5px; color: #5a6b62; }
+.grid .gc { text-align: center; font-weight: 800; font-size: 9.5px; padding: 1px; }
+.grid .gc--t { background: #c5e9cd; color: #1d6b39; }
+.grid .gc--f { background: #efeff1; color: #b9b9c2; }
+.grid .gc--t.gc--we { background: #b1ddbb; }
+.grid .gc--f.gc--we { background: #e6e6ea; }
+
 /* ------------------------- Slide final + confetes ------------------------ */
 .final {
   position: relative; height: 100vh; overflow: hidden; color: #fff;

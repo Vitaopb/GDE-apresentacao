@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=11" />
+  <link rel="stylesheet" href="css/styles.css?v=12" />
 </head>
 <body>
   <div id="deck">
@@ -89,43 +89,37 @@
       <div class="slide__caption">Espaço lúdico de recreação: tapete colorido, brinquedos e mesa de atividades</div>
     </section>
 
-    <!-- Slide: quadro branco da EQUIPE (na parede da planta 3D) -->
-    <section class="slide slide--3d slide--wb" data-slide="3d"
-             data-cam="0,3.2,15.5" data-target="0,1.9,-1" data-board="team">
-      <div class="whiteboard">
-        <div class="wb-title">Equipe de Enfermagem</div>
-        <div class="wb-body" id="wb-team"></div>
+    <!-- Slide: Equipe de Enfermagem -->
+    <section class="slide slide--sheet" data-slide="equipe">
+      <div class="sheet">
+        <div class="sheet__head">
+          <h2 class="sheet__title">Equipe de Enfermagem</h2>
+          <div class="sheet__sub">Unidade de Internação Pediátrica · Julho / 2026 · <b>74 colaboradores</b></div>
+        </div>
+        <div id="equipe-content" class="sheet__body"></div>
       </div>
     </section>
 
-    <!-- Slides: quadro branco da ESCALA, um por dia da semana -->
-    <section class="slide slide--3d slide--wb" data-slide="3d"
-             data-cam="0,3.2,15.5" data-target="0,1.9,-1" data-board="day0">
-      <div class="whiteboard"><div class="wb-title">Escala — Segunda-feira</div><div class="wb-body" id="wb-day0"></div></div>
+    <!-- Slide: Escala — Plantão Diurno -->
+    <section class="slide slide--sheet" data-slide="escala">
+      <div class="sheet">
+        <div class="sheet__head">
+          <h2 class="sheet__title">Escala de Serviço — Plantão Diurno</h2>
+          <div class="sheet__sub">Julho / 2026 &nbsp; · &nbsp; <span class="lg lg--t">T</span> Trabalha &nbsp; <span class="lg lg--f">F</span> Folga</div>
+        </div>
+        <div id="escala-diurno" class="sheet__body sheet__body--grid"></div>
+      </div>
     </section>
-    <section class="slide slide--3d slide--wb" data-slide="3d"
-             data-cam="0,3.2,15.5" data-target="0,1.9,-1" data-board="day1">
-      <div class="whiteboard"><div class="wb-title">Escala — Terça-feira</div><div class="wb-body" id="wb-day1"></div></div>
-    </section>
-    <section class="slide slide--3d slide--wb" data-slide="3d"
-             data-cam="0,3.2,15.5" data-target="0,1.9,-1" data-board="day2">
-      <div class="whiteboard"><div class="wb-title">Escala — Quarta-feira</div><div class="wb-body" id="wb-day2"></div></div>
-    </section>
-    <section class="slide slide--3d slide--wb" data-slide="3d"
-             data-cam="0,3.2,15.5" data-target="0,1.9,-1" data-board="day3">
-      <div class="whiteboard"><div class="wb-title">Escala — Quinta-feira</div><div class="wb-body" id="wb-day3"></div></div>
-    </section>
-    <section class="slide slide--3d slide--wb" data-slide="3d"
-             data-cam="0,3.2,15.5" data-target="0,1.9,-1" data-board="day4">
-      <div class="whiteboard"><div class="wb-title">Escala — Sexta-feira</div><div class="wb-body" id="wb-day4"></div></div>
-    </section>
-    <section class="slide slide--3d slide--wb" data-slide="3d"
-             data-cam="0,3.2,15.5" data-target="0,1.9,-1" data-board="day5">
-      <div class="whiteboard"><div class="wb-title">Escala — Sábado</div><div class="wb-body" id="wb-day5"></div></div>
-    </section>
-    <section class="slide slide--3d slide--wb" data-slide="3d"
-             data-cam="0,3.2,15.5" data-target="0,1.9,-1" data-board="day6">
-      <div class="whiteboard"><div class="wb-title">Escala — Domingo</div><div class="wb-body" id="wb-day6"></div></div>
+
+    <!-- Slide: Escala — Plantão Noturno -->
+    <section class="slide slide--sheet" data-slide="escala">
+      <div class="sheet">
+        <div class="sheet__head">
+          <h2 class="sheet__title">Escala de Serviço — Plantão Noturno</h2>
+          <div class="sheet__sub">Julho / 2026 &nbsp; · &nbsp; <span class="lg lg--t">T</span> Trabalha &nbsp; <span class="lg lg--f">F</span> Folga</div>
+        </div>
+        <div id="escala-noturno" class="sheet__body sheet__body--grid"></div>
+      </div>
     </section>
 
     <!-- Slide final: agradecimento com chuva de confetes -->
@@ -155,9 +149,9 @@
   <script src="js/main.js?v=4"></script>
   <script src="js/export.js?v=1"></script>
   <script src="js/scene3d.js?v=27"></script>
-  <script src="js/team.js?v=1"></script>
-  <script src="js/teamrender.js?v=3"></script>
+  <script src="js/team.js?v=4"></script>
+  <script src="js/teamrender.js?v=4"></script>
   <script src="js/confetti.js?v=2"></script>
-  <script src="js/slides.js?v=7"></script>
+  <script src="js/slides.js?v=8"></script>
 </body>
 </html>
