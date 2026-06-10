@@ -665,8 +665,8 @@
   function fClassroom(r, f) {
     var n = (f && f.count) ? f.count : 12, i;
     var wood = 0x8a7a5e, top = 0xd8c19c, seatHex = 0x7aa0c4;
-    // quadro branco na parede norte: moldura + lousa + bandeja + rabiscos
-    var bw = Math.min(4.2, r.w * 0.5), bx = r.x + (r.w - bw) / 2;
+    // quadro branco na parede norte, na metade direita (a porta fica a 45% da largura)
+    var bw = Math.min(4.2, r.w * 0.42), bx = r.x + r.w * 0.53;
     fb(bx - 0.08, r.y + 0.05, bw + 0.16, 0.05, 1.35, wood, 1.42);        // moldura
     fb(bx, r.y + 0.1, bw, 0.04, 1.15, 0xf7faf8, 1.42);                   // lousa
     fb(bx, r.y + 0.12, bw, 0.14, 0.04, wood, 0.83);                      // bandeja
