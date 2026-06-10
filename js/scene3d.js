@@ -539,17 +539,104 @@
       nurse3D(cxp, zk(r.y + 1.52), facing, i);
     }
   }
+  /* ---- peças de apoio p/ salas clínicas ---- */
+  // estante aberta com caixas de suprimentos coloridas
+  function shelf3D(x, z, w, d) {
+    var wood = 0xcbbfa6, BOX = [0xd9e3ee, 0xbcd9c2, 0xe8d9b0, 0xd9c2d4], k = 0;
+    fb(x, z, 0.05, d, 1.7, wood, 0.93);
+    fb(x + w - 0.05, z, 0.05, d, 1.7, wood, 0.93);
+    [0.5, 0.94, 1.38].forEach(function (sy) {
+      fb(x + 0.05, z, w - 0.1, d, 0.04, wood, sy);
+      var bx = x + 0.12;
+      while (bx + 0.34 < x + w - 0.1) {
+        fb(bx, z + 0.06, 0.28, d - 0.14, 0.24, BOX[k % 4], sy + 0.16);
+        bx += 0.36; k++;
+      }
+    });
+  }
+  // carrinho de curativos (2 bandejas inox + rodízios + bandejas de material)
+  function cart3D(px, pz) {
+    var steel = 0xc7d0d8, pole = 0x9aa3ad;
+    fb(px, pz, 0.55, 0.4, 0.04, steel, 0.85);
+    fb(px, pz, 0.55, 0.4, 0.04, steel, 0.45);
+    [[0.02, 0.02], [0.49, 0.02], [0.02, 0.34], [0.49, 0.34]].forEach(function (o) {
+      fb(px + o[0], pz + o[1], 0.04, 0.04, 0.74, pole, 0.5);
+      sphere(px + o[0] + 0.02, pz + o[1] + 0.02, 0.035, 0x4a4a4a, 0.12);
+    });
+    fb(px + 0.07, pz + 0.07, 0.2, 0.14, 0.07, 0xffffff, 0.91);
+    fb(px + 0.32, pz + 0.1, 0.14, 0.18, 0.1, 0x7fb0d4, 0.93);
+  }
+  // monitor de sinais vitais em pedestal (com traço de ECG)
+  function vitals3D(px, pz) {
+    cyl(px, pz, 0.16, 0.05, 0x9aa3ad, 0.11);
+    cyl(px, pz, 0.025, 1.1, 0x9aa3ad, 0.66);
+    fb(px - 0.17, pz - 0.05, 0.34, 0.09, 0.26, 0x2d3a47, 1.32);
+    fb(px - 0.12, pz - 0.06, 0.1, 0.012, 0.04, 0x59d98c, 1.34);
+  }
+  // lixeira hospitalar (corpo + aro)
+  function bin3D(px, pz, hex) {
+    cyl(px, pz, 0.11, 0.3, hex || 0xeceff2, 0.24);
+    cyl(px, pz, 0.115, 0.03, 0x9aa3ad, 0.4);
+  }
+  // mocho giratório
+  function stool3D(px, pz) {
+    cyl(px, pz, 0.14, 0.03, 0x9aa3ad, 0.11);
+    cyl(px, pz, 0.03, 0.34, 0x9aa3ad, 0.3);
+    cyl(px, pz, 0.17, 0.06, 0x6b88a6, 0.5);
+  }
+
+  // Sala de Serviços: bancada com 2 cubas, armário suspenso, estante, carrinho e hamper
   function fUtility(r) {
-    fb(r.x + 0.25, r.y + 0.3, r.w - 0.5, 0.55, 0.9, 0xe7ddc9, 0.48);
-    fb(r.x + 0.3, r.y + r.h - 0.85, r.w - 0.6, 0.5, 0.75, 0xeef1f5, 0.4);
+    var wood = 0xe7ddc9;
+    fb(r.x + 0.2, r.y + 0.12, r.w - 0.4, 0.55, 0.88, wood, 0.46);        // bancada
+    sinkBasin(r.x + 0.7, r.y + 0.4);
+    sinkBasin(r.x + 1.5, r.y + 0.4);
+    fb(r.x + 0.25, r.y + 0.08, r.w - 0.5, 0.38, 0.55, 0xefe6d4, 1.85);   // armário suspenso
+    shelf3D(r.x + 0.18, r.y + r.h - 0.6, 1.3, 0.42);                     // estante de suprimentos
+    cart3D(r.x + r.w - 1.1, r.y + 1.3);                                  // carrinho
+    cyl(r.x + r.w - 0.45, r.y + 0.45, 0.21, 0.62, 0xd9d3c4, 0.4);        // hamper de roupas
+    cyl(r.x + r.w - 0.45, r.y + 0.45, 0.18, 0.04, 0xc4bca8, 0.73);
   }
+
+  // Sala de Exames/Curativos: bancada c/ pia, maca acolchoada, monitor, carrinho, mocho, soro e lixeiras
   function fCare(r) {
-    fb(r.x + r.w * 0.42 - 0.4, r.y + r.h / 2 - 0.95, 0.8, 1.9, 0.7, 0xf3f5f8, 0.4);
-    fb(r.x + 0.25, r.y + 0.25, r.w - 0.5, 0.45, 0.9, 0xe7ddc9, 0.48);
+    var wood = 0xe7ddc9;
+    fb(r.x + 0.2, r.y + 0.12, r.w * 0.55, 0.55, 0.88, wood, 0.46);       // bancada
+    sinkBasin(r.x + 0.75, r.y + 0.4);
+    fb(r.x + 0.2, r.y + 0.08, r.w * 0.55, 0.38, 0.55, 0xefe6d4, 1.85);   // armário suspenso
+    var mx = r.x + r.w * 0.42, mz = r.y + r.h * 0.6;
+    fb(mx - 0.45, mz - 0.9, 0.9, 1.8, 0.5, 0xeef1f4, 0.33);              // maca (base)
+    fb(mx - 0.42, mz - 0.87, 0.84, 1.74, 0.14, 0xffffff, 0.62);          // colchonete
+    fb(mx - 0.3, mz - 0.82, 0.6, 0.3, 0.1, 0xf2f6fb, 0.72);              // travesseiro
+    vitals3D(mx + 0.78, mz - 0.5);                                       // monitor de sinais
+    cart3D(r.x + r.w - 0.9, r.y + 0.5);                                  // carrinho de curativos
+    stool3D(mx - 0.78, mz + 0.25);                                       // mocho
+    cyl(mx + 0.78, mz + 0.45, 0.025, 1.55, 0x9aa3ad, 0.85);              // suporte de soro
+    fb(mx + 0.71, mz + 0.42, 0.14, 0.06, 0.22, 0xd2e4f2, 1.52);
+    bin3D(r.x + 0.4, r.y + r.h - 0.45);                                  // lixeira comum
+    bin3D(r.x + 0.85, r.y + r.h - 0.45, 0xd47272);                       // lixeira infectante
   }
+
+  // Prescrição Médica: mesa c/ computador e receituário, cadeira, prateleira de prontuários
   function fDesk(r) {
-    fb(r.x + 0.4, r.y + 0.5, r.w - 0.8, 0.7, 0.75, 0xd8c19c, 0.42);
-    fb(r.x + r.w / 2 - 0.2, r.y + 1.5, 0.4, 0.4, 0.45, 0xcdd5df, 0.22);
+    var wood = 0x8a7a5e, mx = r.x + r.w / 2;
+    fb(r.x + 0.22, r.y + 0.18, r.w - 0.44, 0.62, 0.06, 0xc9b288, 0.74);  // tampo
+    fb(r.x + 0.26, r.y + 0.22, 0.05, 0.54, 0.72, wood, 0.36);            // pés
+    fb(r.x + r.w - 0.31, r.y + 0.22, 0.05, 0.54, 0.72, wood, 0.36);
+    fb(mx - 0.26, r.y + 0.28, 0.52, 0.06, 0.32, 0x2d3a47, 1.08);         // monitor
+    fb(mx - 0.05, r.y + 0.26, 0.1, 0.07, 0.14, 0x6b7785, 0.92);
+    fb(mx - 0.2, r.y + 0.46, 0.4, 0.16, 0.03, 0xd7dde4, 0.79);           // teclado
+    fb(mx + 0.28, r.y + 0.3, 0.18, 0.26, 0.03, 0xffffff, 0.79);          // receituário
+    fb(mx - 0.21, r.y + 0.95, 0.42, 0.44, 0.46, 0x6b88a6, 0.24);         // cadeira giratória
+    fb(mx - 0.21, r.y + 1.32, 0.42, 0.1, 0.56, 0x5d7793, 0.55);
+    fb(mx - 0.03, r.y + 1.12, 0.06, 0.06, 0.24, 0x55606e, 0.12);
+    fb(r.x + 0.35, r.y + 0.08, r.w - 0.7, 0.26, 0.04, 0xcbbfa6, 1.58);   // prateleira na parede
+    var BC = [0xc94f4f, 0x3b6fd4, 0x3f9c5a, 0xd9a23b, 0x8a6fc9];
+    var nB = Math.floor((r.w - 0.85) / 0.15);
+    for (var i = 0; i < nB; i++) {                                       // pastas de prontuário
+      fb(r.x + 0.42 + i * 0.15, r.y + 0.1, 0.1, 0.22, 0.3, BC[i % 5], 1.76);
+    }
+    bin3D(r.x + 0.35, r.y + r.h - 0.42);                                 // lixeira
   }
   function fChanging(r) {
     fb(r.x + 0.3, r.y + 0.4, r.w - 0.6, 0.9, 0.9, 0xe7ddc9, 0.5);
@@ -862,7 +949,8 @@
     if (!r) return;
     var wx = cx(r.x + r.w / 2), wz = cz(r.y + r.h / 2);
     var d = Math.max(r.w, r.h);
-    setView(wx, 1.7 + d * 0.45, wz + d * 0.55 + 1.3, wx, 0.75, wz - d * 0.05);
+    // câmera ao sul do ambiente, alta o bastante p/ enxergar por cima da parede
+    setView(wx, 3.2 + d * 0.55, wz + r.h / 2 + 1.0 + d * 0.25, wx, 0.7, wz - d * 0.05);
     if (focusEl) { focusName.textContent = roomLabel(r); focusEl.hidden = false; }
   }
   function clearFocus() { if (focusEl) focusEl.hidden = true; }
