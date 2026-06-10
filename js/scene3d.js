@@ -308,11 +308,12 @@
   var PSKIN = [0xe8b58c, 0xd49a6b, 0xc0894f, 0xf0c39a];
   var BABYCOL = [0xf7c6d2, 0xbfd9f0, 0xfae9b0, 0xc9ecd4];
 
-  // bebê enroladinho deitado no berço (px,pz = centro do berço)
-  function baby3D(px, pz, v) {
+  // bebê enroladinho deitado (px,pz = centro; y0 = altura da superfície, padrão berço)
+  function baby3D(px, pz, v, y0) {
+    var base = y0 || 0.5;
     var skin = PSKIN[v % PSKIN.length], blanket = BABYCOL[v % BABYCOL.length];
-    blob(px, pz, 0.15, blanket, 0.5, 1.0, 0.55, 1.25);                  // corpinho sob a manta
-    sphere(px, pz - 0.17, 0.06, skin, 0.53);                            // cabecinha
+    blob(px, pz, 0.15, blanket, base, 1.0, 0.55, 1.25);                 // corpinho sob a manta
+    sphere(px, pz - 0.17, 0.06, skin, base + 0.03);                     // cabecinha
   }
 
   // paciente deitado sob o cobertor (bx,bz = canto da cama; bw,bd = tamanho)
@@ -638,9 +639,37 @@
     }
     bin3D(r.x + 0.35, r.y + r.h - 0.42);                                 // lixeira
   }
+  // Cuidados/Higienização dos Lactentes: bancada c/ banheira, trocador c/ bebê,
+  // balança, prateleira de toalhas/frascos, hamper, mocho e lixeira
   function fChanging(r) {
-    fb(r.x + 0.3, r.y + 0.4, r.w - 0.6, 0.9, 0.9, 0xe7ddc9, 0.5);
-    fb(r.x + r.w - 0.65, r.y + r.h - 0.7, 0.5, 0.36, 0.85, 0xffffff, 0.42);
+    var wood = 0xe7ddc9;
+    // bancada na parede norte (porta fica na leste)
+    fb(r.x + 0.15, r.y + 0.12, r.w - 0.5, 0.6, 0.82, wood, 0.43);
+    // banheira de bebê embutida (cuba branca + água + torneira)
+    fb(r.x + 0.35, r.y + 0.17, 0.95, 0.5, 0.28, 0xffffff, 0.95);
+    fb(r.x + 0.45, r.y + 0.22, 0.75, 0.4, 0.05, 0xaedaeb, 1.06);
+    fb(r.x + 0.78, r.y + 0.13, 0.08, 0.08, 0.2, 0xb9c2cc, 1.16);
+    // trocador acolchoado com bordas + bebê deitado
+    fb(r.x + 1.5, r.y + 0.18, 1.0, 0.52, 0.1, 0xf2c9d4, 0.89);
+    fb(r.x + 1.5, r.y + 0.16, 1.0, 0.05, 0.16, 0xe8b4c4, 0.92);
+    fb(r.x + 1.5, r.y + 0.67, 1.0, 0.05, 0.16, 0xe8b4c4, 0.92);
+    baby3D(r.x + 2.0, r.y + 0.46, 1, 0.97);
+    // balança de bebê (base + concha)
+    fb(r.x + 2.68, r.y + 0.2, 0.45, 0.4, 0.12, 0xdfe5ea, 0.9);
+    blob(r.x + 2.9, r.y + 0.4, 0.2, 0xffffff, 1.03, 1.25, 0.45, 0.9);
+    // prateleira na parede c/ toalhas enroladas e frascos de banho
+    fb(r.x + 0.3, r.y + 0.06, r.w - 0.9, 0.26, 0.04, 0xcbbfa6, 1.5);
+    [0xf2c9d4, 0xbcd9e8, 0xc9e3c0, 0xf0e3b2].forEach(function (c, i) {
+      cyl(r.x + 0.55 + i * 0.26, r.y + 0.19, 0.075, 0.18, c, 1.62);     // toalhas
+    });
+    [0xd9a23b, 0x6da378, 0x8a6fc9].forEach(function (c, i) {
+      cyl(r.x + 1.75 + i * 0.18, r.y + 0.19, 0.04, 0.17, c, 1.61);      // frascos
+    });
+    // hamper de roupinhas (canto sudoeste) + mocho + lixeira
+    cyl(r.x + 0.45, r.y + r.h - 0.45, 0.2, 0.6, 0xd9d3c4, 0.4);
+    cyl(r.x + 0.45, r.y + r.h - 0.45, 0.17, 0.04, 0xc4bca8, 0.72);
+    stool3D(r.x + 2.0, r.y + 1.35);
+    bin3D(r.x + 1.05, r.y + r.h - 0.4);
   }
   // criança sentada na carteira, de frente p/ o quadro (norte)
   function student3D(px, pz, v) {
@@ -948,9 +977,9 @@
     }
     if (!r) return;
     var wx = cx(r.x + r.w / 2), wz = cz(r.y + r.h / 2);
-    var d = Math.max(r.w, r.h);
+    var d = Math.max(r.w, r.h), dv = Math.max(d, 5.5);
     // câmera ao sul do ambiente, alta o bastante p/ enxergar por cima da parede
-    setView(wx, 3.2 + d * 0.55, wz + r.h / 2 + 1.0 + d * 0.25, wx, 0.7, wz - d * 0.05);
+    setView(wx, 3.2 + dv * 0.55, wz + r.h / 2 + 1.0 + d * 0.25, wx, 0.7, wz - d * 0.05);
     if (focusEl) { focusName.textContent = roomLabel(r); focusEl.hidden = false; }
   }
   function clearFocus() { if (focusEl) focusEl.hidden = true; }
