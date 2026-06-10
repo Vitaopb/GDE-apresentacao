@@ -227,11 +227,12 @@
   }
 
   // cilindro entre dois pontos (osso) — coords do plano, y = altura
-  function limb(ax, ay, az, bx, by, bz, rad, hex) {
+  function limb(ax, ay, az, bx, by, bz, rad, hex, rad2) {
     var a = new THREE.Vector3(cx(ax), ay, cz(az));
     var b = new THREE.Vector3(cx(bx), by, cz(bz));
     var dir = new THREE.Vector3().subVectors(b, a), len = dir.length();
-    var m = new THREE.Mesh(new THREE.CylinderGeometry(rad, rad, len, 12), mat(hex));
+    // rad = raio na ponta A; rad2 (opcional) = raio na ponta B -> membro afunilado
+    var m = new THREE.Mesh(new THREE.CylinderGeometry(rad2 != null ? rad2 : rad, rad, len, 12), mat(hex));
     m.position.copy(a).add(b).multiplyScalar(0.5);
     m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.normalize());
     m.castShadow = true; m.receiveShadow = true; scene.add(m); return m;
@@ -266,33 +267,40 @@
     var v = (variant || 0) % 3;
     var scrub = 0x3f93a8, scrub2 = 0x32788b, skin = SKINS[v], hair = HAIR[v],
         shoe = 0x4a4a4a, board = 0xcdb98f;
-    sphere(px, pz, 0.16, scrub, 0.52);                                   // quadril
-    // coxas (p/ frente) + canelas (p/ baixo) + sapatos
-    limb(px - 0.1, 0.5, pz, px - 0.1, 0.46, pz - s * 0.46, 0.085, scrub);
-    limb(px + 0.1, 0.5, pz, px + 0.1, 0.46, pz - s * 0.46, 0.085, scrub);
-    limb(px - 0.1, 0.46, pz - s * 0.46, px - 0.1, 0.08, pz - s * 0.5, 0.07, scrub2);
-    limb(px + 0.1, 0.46, pz - s * 0.46, px + 0.1, 0.08, pz - s * 0.5, 0.07, scrub2);
-    sphere(px - 0.1, pz - s * 0.52, 0.075, shoe, 0.06);
-    sphere(px + 0.1, pz - s * 0.52, 0.075, shoe, 0.06);
-    // tronco (cintura -> ombros), busto sutil, ombros estreitos
-    limb(px, 0.55, pz + s * 0.02, px, 1.04, pz - s * 0.04, 0.135, scrub);
-    sphere(px, pz - s * 0.11, 0.07, scrub, 0.85);
-    limb(px - 0.16, 1.03, pz - s * 0.02, px + 0.16, 1.03, pz - s * 0.02, 0.065, scrub);
-    // pescoço + cabeça
-    cyl(px, pz - s * 0.02, 0.043, 0.1, skin, 1.14);
-    sphere(px, pz - s * 0.04, 0.125, skin, 1.29);
-    // cabelo (calota) + rabo de cavalo (atrás)
-    sphere(px, pz + s * 0.04, 0.14, hair, 1.33);
-    limb(px, 1.33, pz + s * 0.12, px, 0.97, pz + s * 0.17, 0.05, hair);
-    // braços (ombro -> cotovelo -> mãos) segurando a prancheta
-    limb(px - 0.16, 1.0, pz - s * 0.02, px - 0.18, 0.84, pz - s * 0.24, 0.05, scrub);
-    limb(px - 0.18, 0.84, pz - s * 0.24, px - 0.06, 0.82, pz - s * 0.42, 0.045, skin);
-    limb(px + 0.16, 1.0, pz - s * 0.02, px + 0.18, 0.84, pz - s * 0.24, 0.05, scrub);
-    limb(px + 0.18, 0.84, pz - s * 0.24, px + 0.06, 0.82, pz - s * 0.42, 0.045, skin);
+    blob(px, pz, 0.12, scrub, 0.52, 1.3, 0.85, 1.05);                    // quadril
+    // coxas afuniladas + joelhos + canelas + sapatos alongados
+    limb(px - 0.075, 0.54, pz, px - 0.075, 0.52, pz - s * 0.4, 0.065, scrub, 0.052);
+    limb(px + 0.075, 0.54, pz, px + 0.075, 0.52, pz - s * 0.4, 0.065, scrub, 0.052);
+    sphere(px - 0.075, pz - s * 0.41, 0.052, scrub2, 0.52);
+    sphere(px + 0.075, pz - s * 0.41, 0.052, scrub2, 0.52);
+    limb(px - 0.075, 0.5, pz - s * 0.43, px - 0.075, 0.08, pz - s * 0.47, 0.045, scrub2, 0.034);
+    limb(px + 0.075, 0.5, pz - s * 0.43, px + 0.075, 0.08, pz - s * 0.47, 0.045, scrub2, 0.034);
+    blob(px - 0.075, pz - s * 0.53, 0.045, shoe, 0.05, 1.0, 0.7, 1.8);
+    blob(px + 0.075, pz - s * 0.53, 0.045, shoe, 0.05, 1.0, 0.7, 1.8);
+    // tronco afunilado (cintura estreita -> ombros) + busto + ombros arredondados
+    limb(px, 0.56, pz + s * 0.01, px, 1.05, pz - s * 0.03, 0.1, scrub, 0.12);
+    blob(px, pz - s * 0.09, 0.062, scrub, 0.88, 1.35, 0.85, 0.75);
+    sphere(px - 0.14, pz - s * 0.03, 0.05, scrub, 1.04);
+    sphere(px + 0.14, pz - s * 0.03, 0.05, scrub, 1.04);
+    // pescoço + cabeça (menor, levemente oval)
+    limb(px, 1.05, pz - s * 0.02, px, 1.16, pz - s * 0.02, 0.034, skin);
+    blob(px, pz - s * 0.025, 0.1, skin, 1.27, 0.95, 1.1, 1.0);
+    // cabelo (calota) + rabo de cavalo afunilado
+    blob(px, pz + s * 0.025, 0.108, hair, 1.3, 1.0, 1.05, 1.0);
+    limb(px, 1.31, pz + s * 0.09, px, 1.0, pz + s * 0.14, 0.04, hair, 0.024);
+    // braços: braço (scrub) -> cotovelo -> antebraço (pele) -> mão
+    limb(px - 0.145, 1.02, pz - s * 0.03, px - 0.165, 0.85, pz - s * 0.21, 0.04, scrub, 0.033);
+    sphere(px - 0.165, pz - s * 0.21, 0.033, skin, 0.85);
+    limb(px - 0.165, 0.85, pz - s * 0.21, px - 0.06, 0.89, pz - s * 0.38, 0.029, skin, 0.025);
+    sphere(px - 0.06, pz - s * 0.39, 0.032, skin, 0.89);
+    limb(px + 0.145, 1.02, pz - s * 0.03, px + 0.165, 0.85, pz - s * 0.21, 0.04, scrub, 0.033);
+    sphere(px + 0.165, pz - s * 0.21, 0.033, skin, 0.85);
+    limb(px + 0.165, 0.85, pz - s * 0.21, px + 0.06, 0.89, pz - s * 0.38, 0.029, skin, 0.025);
+    sphere(px + 0.06, pz - s * 0.39, 0.032, skin, 0.89);
     // prancheta inclinada, com a FACE (papel + presilha) voltada p/ a enfermeira
-    plank(px, pz - s * 0.36, 0.3, 0.34, 0.03, board, 0.9, s * 0.7);
-    plank(px, pz - s * 0.345, 0.25, 0.28, 0.012, 0xfdfdfd, 0.918, s * 0.7);
-    plank(px, pz - s * 0.47, 0.13, 0.05, 0.03, 0x8a8f96, 0.955, s * 0.7);
+    plank(px, pz - s * 0.36, 0.3, 0.34, 0.03, board, 0.92, s * 0.7);
+    plank(px, pz - s * 0.345, 0.25, 0.28, 0.012, 0xfdfdfd, 0.938, s * 0.7);
+    plank(px, pz - s * 0.47, 0.13, 0.05, 0.03, 0x8a8f96, 0.975, s * 0.7);
   }
 
   // paletas p/ pacientes/bebês (variar tom de pele e manta)
@@ -312,7 +320,7 @@
     var z0 = headTop ? bz + 0.34 : bz + 0.1;
     fb(cxb - bw * 0.32, z0, bw * 0.64, bd - 0.44, 0.16, hex, 0.63);     // corpo sob o cobertor
     var hz = headTop ? bz + 0.17 : bz + bd - 0.17;
-    sphere(cxb, hz, 0.082, skin, 0.71);                                 // cabeça no travesseiro
+    blob(cxb, hz, 0.078, skin, 0.71, 0.95, 0.85, 1.1);                  // cabeça no travesseiro
   }
 
   // enfermeira EM PÉ (px,pz = pés); facing 'north'/'south'; variant varia cabelo/pele
@@ -321,49 +329,65 @@
     var HAIR = [0x4a3526, 0x2a211c, 0x70512f], SKINS = [0xe8b58c, 0xd49a6b, 0xc0894f];
     var v = (variant || 0) % 3;
     var scrub = 0x3f93a8, scrub2 = 0x32788b, skin = SKINS[v], hair = HAIR[v], shoe = 0x4a4a4a;
-    // pernas + sapatos
-    limb(px - 0.09, 0.92, pz, px - 0.09, 0.04, pz, 0.085, scrub2);
-    limb(px + 0.09, 0.92, pz, px + 0.09, 0.04, pz, 0.085, scrub2);
-    sphere(px - 0.09, pz - s * 0.05, 0.08, shoe, 0.05);
-    sphere(px + 0.09, pz - s * 0.05, 0.08, shoe, 0.05);
-    // quadril + tronco + busto + ombros
-    sphere(px, pz, 0.145, scrub, 0.94);
-    limb(px, 0.95, pz, px, 1.5, pz - s * 0.02, 0.14, scrub);
-    sphere(px, pz - s * 0.08, 0.07, scrub, 1.2);
-    limb(px - 0.17, 1.49, pz - s * 0.02, px + 0.17, 1.49, pz - s * 0.02, 0.065, scrub);
-    // braços ao longo do corpo (levemente p/ frente)
-    limb(px - 0.17, 1.47, pz - s * 0.02, px - 0.2, 1.12, pz - s * 0.06, 0.05, scrub);
-    limb(px - 0.2, 1.12, pz - s * 0.06, px - 0.19, 0.82, pz - s * 0.16, 0.045, skin);
-    limb(px + 0.17, 1.47, pz - s * 0.02, px + 0.2, 1.12, pz - s * 0.06, 0.05, scrub);
-    limb(px + 0.2, 1.12, pz - s * 0.06, px + 0.19, 0.82, pz - s * 0.16, 0.045, skin);
-    // pescoço + cabeça + cabelo + rabo de cavalo
-    cyl(px, pz - s * 0.02, 0.045, 0.1, skin, 1.6);
-    sphere(px, pz - s * 0.03, 0.13, skin, 1.74);
-    sphere(px, pz + s * 0.04, 0.145, hair, 1.78);
-    limb(px, 1.78, pz + s * 0.12, px, 1.4, pz + s * 0.17, 0.05, hair);
+    // pernas afuniladas (coxa -> joelho -> canela) + sapatos alongados
+    limb(px - 0.08, 0.92, pz, px - 0.08, 0.5, pz, 0.068, scrub2, 0.053);
+    limb(px + 0.08, 0.92, pz, px + 0.08, 0.5, pz, 0.068, scrub2, 0.053);
+    sphere(px - 0.08, pz, 0.053, scrub2, 0.5);
+    sphere(px + 0.08, pz, 0.053, scrub2, 0.5);
+    limb(px - 0.08, 0.5, pz, px - 0.08, 0.07, pz, 0.048, scrub2, 0.036);
+    limb(px + 0.08, 0.5, pz, px + 0.08, 0.07, pz, 0.048, scrub2, 0.036);
+    blob(px - 0.08, pz - s * 0.07, 0.048, shoe, 0.045, 1.0, 0.7, 1.8);
+    blob(px + 0.08, pz - s * 0.07, 0.048, shoe, 0.045, 1.0, 0.7, 1.8);
+    // quadril + tronco afunilado + busto + ombros arredondados
+    blob(px, pz, 0.112, scrub, 0.93, 1.3, 0.8, 1.0);
+    limb(px, 0.96, pz, px, 1.43, pz - s * 0.015, 0.095, scrub, 0.115);
+    blob(px, pz - s * 0.08, 0.06, scrub, 1.25, 1.35, 0.9, 0.75);
+    sphere(px - 0.135, pz - s * 0.015, 0.048, scrub, 1.42);
+    sphere(px + 0.135, pz - s * 0.015, 0.048, scrub, 1.42);
+    // braços: braço -> cotovelo -> antebraço -> mão
+    limb(px - 0.14, 1.4, pz - s * 0.015, px - 0.16, 1.13, pz - s * 0.05, 0.038, scrub, 0.031);
+    sphere(px - 0.16, pz - s * 0.05, 0.031, skin, 1.13);
+    limb(px - 0.16, 1.13, pz - s * 0.05, px - 0.15, 0.87, pz - s * 0.1, 0.027, skin, 0.023);
+    sphere(px - 0.15, pz - s * 0.11, 0.03, skin, 0.86);
+    limb(px + 0.14, 1.4, pz - s * 0.015, px + 0.16, 1.13, pz - s * 0.05, 0.038, scrub, 0.031);
+    sphere(px + 0.16, pz - s * 0.05, 0.031, skin, 1.13);
+    limb(px + 0.16, 1.13, pz - s * 0.05, px + 0.15, 0.87, pz - s * 0.1, 0.027, skin, 0.023);
+    sphere(px + 0.15, pz - s * 0.11, 0.03, skin, 0.86);
+    // pescoço + cabeça (menor, oval) + cabelo + rabo de cavalo
+    limb(px, 1.43, pz - s * 0.01, px, 1.53, pz - s * 0.01, 0.033, skin);
+    blob(px, pz - s * 0.02, 0.1, skin, 1.64, 0.95, 1.1, 1.0);
+    blob(px, pz + s * 0.03, 0.108, hair, 1.67, 1.0, 1.05, 1.0);
+    limb(px, 1.67, pz + s * 0.09, px, 1.32, pz + s * 0.14, 0.04, hair, 0.024);
   }
 
   // auxiliar de limpeza EM PÉ, levemente inclinada, passando pano (esfregão) + balde
   function cleaner3D(px, pz, facing) {
     var s = facing === 'south' ? -1 : 1;
     var uni = 0x6f8fa6, uni2 = 0x5b7689, skin = 0xe2a878, hair = 0x3a2b20, pole = 0x9aa3ad, mop = 0xdfe4e8;
-    // pernas + sapatos
-    limb(px - 0.09, 0.88, pz, px - 0.09, 0.04, pz, 0.085, uni2);
-    limb(px + 0.09, 0.88, pz, px + 0.09, 0.04, pz - s * 0.14, 0.085, uni2);
-    sphere(px - 0.09, pz - s * 0.05, 0.08, 0x444, 0.05);
-    sphere(px + 0.09, pz - s * 0.19, 0.08, 0x444, 0.05);
-    // quadril + tronco inclinado p/ frente
-    sphere(px, pz, 0.14, uni, 0.9);
-    limb(px, 0.92, pz, px, 1.38, pz - s * 0.16, 0.135, uni);
-    limb(px - 0.15, 1.34, pz - s * 0.13, px + 0.15, 1.34, pz - s * 0.13, 0.06, uni);
-    // cabeça + cabelo (preso) inclinada
-    cyl(px, pz - s * 0.18, 0.042, 0.08, skin, 1.42);
-    sphere(px, pz - s * 0.24, 0.12, skin, 1.5);
-    sphere(px, pz - s * 0.18, 0.135, hair, 1.54);
-    sphere(px, pz - s * 0.12, 0.06, hair, 1.5);                    // coque
-    // braços p/ frente-baixo segurando o cabo
-    limb(px - 0.14, 1.3, pz - s * 0.13, px - 0.04, 0.96, pz - s * 0.42, 0.045, uni);
-    limb(px + 0.14, 1.3, pz - s * 0.13, px + 0.02, 0.78, pz - s * 0.6, 0.045, uni);
+    // pernas afuniladas (direita um passo à frente) + sapatos alongados
+    limb(px - 0.08, 0.86, pz, px - 0.08, 0.48, pz, 0.065, uni2, 0.05);
+    sphere(px - 0.08, pz, 0.05, uni2, 0.48);
+    limb(px - 0.08, 0.48, pz, px - 0.08, 0.07, pz, 0.046, uni2, 0.035);
+    blob(px - 0.08, pz - s * 0.07, 0.046, 0x444444, 0.042, 1.0, 0.7, 1.8);
+    limb(px + 0.08, 0.86, pz, px + 0.08, 0.5, pz - s * 0.07, 0.065, uni2, 0.05);
+    sphere(px + 0.08, pz - s * 0.07, 0.05, uni2, 0.5);
+    limb(px + 0.08, 0.5, pz - s * 0.07, px + 0.08, 0.07, pz - s * 0.13, 0.046, uni2, 0.035);
+    blob(px + 0.08, pz - s * 0.2, 0.046, 0x444444, 0.042, 1.0, 0.7, 1.8);
+    // quadril + tronco inclinado p/ frente (afunilado) + ombros
+    blob(px, pz, 0.108, uni, 0.9, 1.3, 0.8, 1.0);
+    limb(px, 0.93, pz, px, 1.32, pz - s * 0.18, 0.088, uni, 0.11);
+    sphere(px - 0.125, pz - s * 0.165, 0.045, uni, 1.3);
+    sphere(px + 0.125, pz - s * 0.165, 0.045, uni, 1.3);
+    // pescoço + cabeça (menor, oval) inclinada + cabelo preso com coque
+    limb(px, 1.33, pz - s * 0.19, px, 1.41, pz - s * 0.23, 0.03, skin);
+    blob(px, pz - s * 0.27, 0.095, skin, 1.46, 0.95, 1.08, 1.0);
+    blob(px, pz - s * 0.21, 0.103, hair, 1.5, 1.0, 1.0, 1.0);
+    sphere(px, pz - s * 0.14, 0.05, hair, 1.47);                   // coque
+    // braços p/ frente-baixo segurando o cabo (com cotovelo e mão)
+    limb(px - 0.125, 1.28, pz - s * 0.16, px - 0.05, 1.0, pz - s * 0.4, 0.034, uni, 0.028);
+    sphere(px - 0.05, pz - s * 0.4, 0.027, skin, 1.0);
+    limb(px + 0.125, 1.28, pz - s * 0.16, px + 0.03, 0.8, pz - s * 0.56, 0.034, uni, 0.028);
+    sphere(px + 0.03, pz - s * 0.56, 0.027, skin, 0.8);
     // cabo do rodo (das mãos até o chão, inclinado) + cabeça (lâmina branca larga)
     limb(px - 0.02, 1.0, pz - s * 0.45, px + 0.02, 0.12, pz - s * 1.0, 0.025, pole);
     fb(px - 0.28, pz - s * 1.0 - 0.06, 0.56, 0.12, 0.08, 0xf3f6f8, 0.1);     // cabeça do rodo
