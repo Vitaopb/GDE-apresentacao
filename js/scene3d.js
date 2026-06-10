@@ -555,15 +555,61 @@
     fb(r.x + 0.3, r.y + 0.4, r.w - 0.6, 0.9, 0.9, 0xe7ddc9, 0.5);
     fb(r.x + r.w - 0.65, r.y + r.h - 0.7, 0.5, 0.36, 0.85, 0xffffff, 0.42);
   }
+  // criança sentada na carteira, de frente p/ o quadro (norte)
+  function student3D(px, pz, v) {
+    var SH = [0xd96d6d, 0x6d9bd9, 0x76b985, 0xd9c46d, 0x9a85cc, 0x68b8c4];
+    var SK = [0xe8b58c, 0xd49a6b, 0xc0894f, 0xf0c39a];
+    var HR = [0x3a2b20, 0x1f1a16, 0x70512f, 0x4a3526];
+    var shirt = SH[v % SH.length], skin = SK[(v * 2 + 1) % SK.length],
+        hair = HR[(v * 3 + 2) % HR.length], pants = 0x4e5a66;
+    blob(px, pz, 0.1, pants, 0.47, 1.2, 0.7, 0.9);                       // quadril no assento
+    limb(px - 0.055, 0.48, pz, px - 0.055, 0.46, pz - 0.26, 0.05, pants, 0.04);   // coxas
+    limb(px + 0.055, 0.48, pz, px + 0.055, 0.46, pz - 0.26, 0.05, pants, 0.04);
+    limb(px - 0.055, 0.45, pz - 0.28, px - 0.055, 0.06, pz - 0.3, 0.035, pants, 0.028); // canelas
+    limb(px + 0.055, 0.45, pz - 0.28, px + 0.055, 0.06, pz - 0.3, 0.035, pants, 0.028);
+    limb(px, 0.5, pz, px, 0.86, pz - 0.02, 0.085, shirt, 0.095);         // tronco
+    limb(px - 0.1, 0.84, pz - 0.02, px - 0.08, 0.72, pz - 0.3, 0.03, shirt, 0.025); // braços na mesa
+    limb(px + 0.1, 0.84, pz - 0.02, px + 0.08, 0.72, pz - 0.3, 0.03, shirt, 0.025);
+    limb(px, 0.86, pz - 0.01, px, 0.93, pz - 0.01, 0.026, skin);         // pescoço
+    blob(px, pz - 0.015, 0.082, skin, 1.02, 0.95, 1.08, 1.0);            // cabeça
+    blob(px, pz + 0.02, 0.088, hair, 1.05, 1.0, 0.85, 1.0);              // cabelo
+  }
+
   function fClassroom(r, f) {
-    fb(r.x + r.w / 2 - 0.8, r.y + 0.5, 1.6, 0.7, 0.75, 0xd8c19c, 0.42);
-    var max = (f && f.count) ? f.count : 99, gx = 1.3, gy = 1.4, startY = r.y + 1.9, placed = 0;
-    var cols = Math.max(1, Math.floor((r.w - 0.8) / gx));
-    var rows = Math.floor((r.y + r.h - 0.5 - startY) / gy);
-    for (var rr = 0; rr < rows && placed < max; rr++) for (var c = 0; c < cols && placed < max; c++, placed++) {
-      var dx = r.x + 0.7 + c * gx, dy = startY + rr * gy;
-      fb(dx, dy, 0.9, 0.5, 0.7, 0xd8c19c, 0.4);
-      fb(dx + 0.25, dy + 0.85, 0.4, 0.4, 0.45, 0xcdd5df, 0.22);
+    var n = (f && f.count) ? f.count : 12, i;
+    var wood = 0x8a7a5e, top = 0xd8c19c, seatHex = 0x7aa0c4;
+    // quadro branco na parede norte: moldura + lousa + bandeja + rabiscos
+    var bw = Math.min(4.2, r.w * 0.5), bx = r.x + (r.w - bw) / 2;
+    fb(bx - 0.08, r.y + 0.05, bw + 0.16, 0.05, 1.35, wood, 1.42);        // moldura
+    fb(bx, r.y + 0.1, bw, 0.04, 1.15, 0xf7faf8, 1.42);                   // lousa
+    fb(bx, r.y + 0.12, bw, 0.14, 0.04, wood, 0.83);                      // bandeja
+    fb(bx + bw * 0.08, r.y + 0.125, bw * 0.42, 0.015, 0.05, 0x3b6fd4, 1.7);   // rabisco azul
+    fb(bx + bw * 0.12, r.y + 0.125, bw * 0.3, 0.015, 0.05, 0xc94f4f, 1.5);    // rabisco vermelho
+    fb(bx + bw * 0.55, r.y + 0.125, bw * 0.3, 0.015, 0.05, 0x3f9c5a, 1.28);   // rabisco verde
+    // mesa do professor (tampo + painel + pés) à esquerda da frente
+    var tdx = r.x + r.w * 0.16, tdz = r.y + 0.7;
+    fb(tdx, tdz, 1.5, 0.65, 0.06, 0xc9b288, 0.74);                       // tampo
+    fb(tdx + 0.06, tdz + 0.06, 1.38, 0.05, 0.52, top, 0.45);             // painel frontal
+    fb(tdx + 0.03, tdz + 0.05, 0.05, 0.55, 0.7, wood, 0.35);             // pé esq
+    fb(tdx + 1.42, tdz + 0.05, 0.05, 0.55, 0.7, wood, 0.35);             // pé dir
+    fb(tdx + 0.25, tdz + 0.12, 0.32, 0.22, 0.05, 0xffffff, 0.79);        // papéis
+    // professor em pé ao lado do quadro, de frente p/ a turma
+    man3D(r.x + r.w * 0.62, r.y + 1.05, 'south', 1);
+    // carteiras: 2 fileiras de frente p/ o quadro, com um aluno em cada
+    var rows = (r.h > 6) ? 3 : 2, cols = Math.ceil(n / rows), placed = 0;
+    var slot = (r.w - 1.0) / cols, startZ = r.y + 1.95, gy = 1.5;
+    for (var rr = 0; rr < rows && placed < n; rr++) {
+      for (var c = 0; c < cols && placed < n; c++, placed++) {
+        var dx = r.x + 0.5 + c * slot + slot / 2, dz = startZ + rr * gy;
+        fb(dx - 0.475, dz, 0.95, 0.55, 0.05, top, 0.72);                 // tampo da carteira
+        fb(dx - 0.45, dz + 0.04, 0.05, 0.48, 0.66, wood, 0.36);          // lateral esq
+        fb(dx + 0.4, dz + 0.04, 0.05, 0.48, 0.66, wood, 0.36);           // lateral dir
+        fb(dx - 0.21, dz + 0.72, 0.42, 0.4, 0.05, seatHex, 0.44);        // assento
+        fb(dx - 0.21, dz + 1.08, 0.42, 0.05, 0.42, seatHex, 0.72);       // encosto
+        fb(dx - 0.19, dz + 0.76, 0.04, 0.32, 0.42, 0x9aa3ad, 0.21);      // pé esq
+        fb(dx + 0.15, dz + 0.76, 0.04, 0.32, 0.42, 0x9aa3ad, 0.21);      // pé dir
+        student3D(dx, dz + 0.94, placed);                                // aluno sentado
+      }
     }
   }
   function fDining(r) {
