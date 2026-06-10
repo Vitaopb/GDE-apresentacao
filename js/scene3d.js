@@ -61,7 +61,7 @@
     scene.background = new THREE.Color(0xdde3ea);
     scene.fog = new THREE.Fog(0xdde3ea, 95, 190);   // suaviza o horizonte (estúdio)
 
-    camera = new THREE.PerspectiveCamera(42, w / h, 0.1, 500);
+    camera = new THREE.PerspectiveCamera(42, w / h, 0.3, 300);  // near maior = +precisão de profundidade
     camera.position.set(0, 33, 31);
 
     // luz ambiente suave (céu/chão) + luz principal com sombra + preenchimento
@@ -428,14 +428,15 @@
     limb(px + 0.125, 1.28, pz - s * 0.16, px + 0.03, 0.8, pz - s * 0.56, 0.034, uni, 0.028);
     sphere(px + 0.03, pz - s * 0.56, 0.027, skin, 0.8);
     // cabo do rodo (das mãos até o chão, inclinado) + cabeça (lâmina branca larga)
-    limb(px - 0.02, 1.0, pz - s * 0.45, px + 0.02, 0.12, pz - s * 1.0, 0.025, pole);
-    fb(px - 0.28, pz - s * 1.0 - 0.06, 0.56, 0.12, 0.08, 0xf3f6f8, 0.1);     // cabeça do rodo
-    fb(px - 0.28, pz - s * 1.0 - 0.065, 0.56, 0.04, 0.02, 0x9aa3ad, 0.155);  // borracha do rodo
-    // rastro de água/limpo no chão
-    fb(px - 0.3, pz - s * 1.0 - 0.2, 0.6, 0.34, 0.012, 0xcfe6ee, 0.012);
-    // baldinho ao lado
-    cyl(px - 0.55, pz - s * 0.2, 0.16, 0.34, 0xf2c14e, 0.17);
-    cyl(px - 0.55, pz - s * 0.2, 0.13, 0.06, 0xeaf2f6, 0.32);       // água
+    // (itens rentes ao chão ficam ACIMA do topo do piso, y=0.08, p/ não "afundar")
+    limb(px - 0.02, 1.0, pz - s * 0.45, px + 0.02, 0.16, pz - s * 1.0, 0.025, pole);
+    fb(px - 0.28, pz - s * 1.0 - 0.06, 0.56, 0.12, 0.08, 0xf3f6f8, 0.125);   // cabeça do rodo
+    fb(px - 0.28, pz - s * 1.0 - 0.065, 0.56, 0.04, 0.02, 0x9aa3ad, 0.175);  // borracha do rodo
+    // rastro de água/limpo sobre o piso
+    fb(px - 0.3, pz - s * 1.0 - 0.2, 0.6, 0.34, 0.012, 0xcfe6ee, 0.09);
+    // baldinho ao lado (base apoiada no piso)
+    cyl(px - 0.55, pz - s * 0.2, 0.16, 0.34, 0xf2c14e, 0.25);
+    cyl(px - 0.55, pz - s * 0.2, 0.13, 0.06, 0xeaf2f6, 0.4);        // água
   }
 
   function buildFurniture(r) {
@@ -573,7 +574,7 @@
     var cols = 4, rows = 3, rw = r.w * 0.42, rh = r.h * 0.42, ox = r.x + r.w * 0.3, oz = r.y + r.h * 0.45;
     var cw = rw / cols, ch = rh / rows, colors = [0xef4444, 0xf59e0b, 0x3b82f6, 0x22c55e], k = 0, i, j;
     for (j = 0; j < rows; j++) for (i = 0; i < cols; i++, k++) {
-      fb(ox + i * cw + 0.05, oz + j * ch + 0.05, cw - 0.1, ch - 0.1, 0.04, colors[k % 4], 0.06);
+      fb(ox + i * cw + 0.05, oz + j * ch + 0.05, cw - 0.1, ch - 0.1, 0.04, colors[k % 4], 0.103);
     }
     fb(r.x + 0.4, r.y + 0.6, 0.6, r.h * 0.5, 1.0, 0xeef1f5, 0.5);          // estante
     roundTable3D(r.x + r.w * 0.78, r.y + r.h * 0.28, 0.5, 0xbfe0d8);
@@ -587,7 +588,7 @@
     // chuveiro (canto sup-esq): base + tubo
     var shw = f.shower ? Math.min(1.1, r.w * 0.4, r.h * 0.4) : 0;
     if (f.shower) {
-      fb(r.x + 0.15, r.y + 0.15, shw, shw, 0.05, 0xdce8f1, 0.04);
+      fb(r.x + 0.15, r.y + 0.15, shw, shw, 0.05, 0xdce8f1, 0.105);
       cyl(r.x + 0.15 + shw - 0.25, r.y + 0.4, 0.06, 1.9, 0xc2ccd6, 0.95);
     }
     // pias na parede de cima, sobre bancada
@@ -649,8 +650,8 @@
       new THREE.BoxGeometry(r.w, 0.08, r.h),
       new THREE.MeshStandardMaterial({ color: colorHex, map: t, roughness: 0.72, metalness: 0.03 })
     );
-    // circulação (decorativa) fica 1,5 cm abaixo dos pisos dos ambientes (evita z-fighting)
-    m.position.set(cx(r.x + r.w / 2), r.decorative ? 0.033 : 0.048, cz(r.y + r.h / 2));
+    // circulação (decorativa) fica bem abaixo dos pisos dos ambientes (sem z-fighting)
+    m.position.set(cx(r.x + r.w / 2), r.decorative ? 0.015 : 0.04, cz(r.y + r.h / 2));
     m.receiveShadow = true;
     scene.add(m);
   }
