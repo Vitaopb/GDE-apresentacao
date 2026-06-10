@@ -360,6 +360,45 @@
     limb(px, 1.67, pz + s * 0.09, px, 1.32, pz + s * 0.14, 0.04, hair, 0.024);
   }
 
+  // homem EM PÉ (acompanhante/visitante) — ombros largos, cabelo curto, roupa casual
+  var MAN_STYLES = [
+    { shirt: 0x5d83a8, pants: 0x4e4a45, skin: 0xdfa67c, hair: 0x33271e },   // 1: camisa azul
+    { shirt: 0x6da378, pants: 0x3f4853, skin: 0xc0894f, hair: 0x1f1a16 },   // 2: camisa verde
+    { shirt: 0xd9d9d9, pants: 0x46566b, skin: 0xe8b58c, hair: 0x4a3526 }    // 3: camiseta clara
+  ];
+  function man3D(px, pz, facing, variant) {
+    var s = facing === 'south' ? -1 : 1;
+    var st = MAN_STYLES[((variant || 1) - 1) % MAN_STYLES.length];
+    var shirt = st.shirt, pants = st.pants, skin = st.skin, hair = st.hair, shoe = 0x3c3c3c;
+    // pernas afuniladas + joelhos + sapatos
+    limb(px - 0.085, 0.95, pz, px - 0.085, 0.5, pz, 0.07, pants, 0.055);
+    limb(px + 0.085, 0.95, pz, px + 0.085, 0.5, pz, 0.07, pants, 0.055);
+    sphere(px - 0.085, pz, 0.055, pants, 0.5);
+    sphere(px + 0.085, pz, 0.055, pants, 0.5);
+    limb(px - 0.085, 0.5, pz, px - 0.085, 0.07, pz, 0.05, pants, 0.038);
+    limb(px + 0.085, 0.5, pz, px + 0.085, 0.07, pz, 0.05, pants, 0.038);
+    blob(px - 0.085, pz - s * 0.07, 0.05, shoe, 0.046, 1.0, 0.7, 1.85);
+    blob(px + 0.085, pz - s * 0.07, 0.05, shoe, 0.046, 1.0, 0.7, 1.85);
+    // quadril reto + tronco que alarga p/ ombros largos
+    blob(px, pz, 0.108, pants, 0.97, 1.15, 0.75, 1.0);
+    limb(px, 1.0, pz, px, 1.48, pz - s * 0.01, 0.1, shirt, 0.13);
+    sphere(px - 0.155, pz - s * 0.01, 0.052, shirt, 1.47);
+    sphere(px + 0.155, pz - s * 0.01, 0.052, shirt, 1.47);
+    // braços: braço (camisa) -> cotovelo -> antebraço (pele) -> mão
+    limb(px - 0.16, 1.45, pz - s * 0.01, px - 0.18, 1.16, pz - s * 0.045, 0.042, shirt, 0.034);
+    sphere(px - 0.18, pz - s * 0.045, 0.033, skin, 1.16);
+    limb(px - 0.18, 1.16, pz - s * 0.045, px - 0.17, 0.89, pz - s * 0.09, 0.029, skin, 0.025);
+    sphere(px - 0.17, pz - s * 0.1, 0.031, skin, 0.88);
+    limb(px + 0.16, 1.45, pz - s * 0.01, px + 0.18, 1.16, pz - s * 0.045, 0.042, shirt, 0.034);
+    sphere(px + 0.18, pz - s * 0.045, 0.033, skin, 1.16);
+    limb(px + 0.18, 1.16, pz - s * 0.045, px + 0.17, 0.89, pz - s * 0.09, 0.029, skin, 0.025);
+    sphere(px + 0.17, pz - s * 0.1, 0.031, skin, 0.88);
+    // pescoço + cabeça oval + cabelo curto (calota achatada, sem rabo)
+    limb(px, 1.48, pz - s * 0.005, px, 1.58, pz - s * 0.005, 0.037, skin);
+    blob(px, pz - s * 0.015, 0.1, skin, 1.69, 0.96, 1.1, 1.0);
+    blob(px, pz + s * 0.018, 0.104, hair, 1.74, 1.0, 0.72, 1.0);
+  }
+
   // auxiliar de limpeza EM PÉ, levemente inclinada, passando pano (esfregão) + balde
   function cleaner3D(px, pz, facing) {
     var s = facing === 'south' ? -1 : 1;
@@ -448,6 +487,8 @@
     }
     // enfermeira em pé no corredor central (só nos quartos)
     if (f.staff) nurseStanding3D(r.x + r.w * 0.6, r.y + r.h * 0.5, 'north', 0);
+    // acompanhante homem em pé no corredor, voltado p/ os leitos de cima
+    if (f.man) man3D(r.x + r.w * 0.34, r.y + r.h * 0.56, 'north', f.man);
   }
 
   function fCribs(r, f) {
@@ -576,6 +617,8 @@
     }
     // auxiliar de limpeza passando pano no centro do banheiro
     if (f.cleaner) cleaner3D(r.x + r.w * 0.46, r.y + r.h * 0.5, 'south');
+    // homem em pé na bancada das pias (lavando as mãos)
+    if (f.man) man3D(r.x + r.w * 0.55, r.y + 1.35, 'north', f.man);
   }
   function fAnteroom(r) {
     fb(r.x + r.w / 2 - 0.25, r.y + 0.45, 0.5, 0.36, 0.85, 0xffffff, 0.42);
@@ -606,7 +649,8 @@
       new THREE.BoxGeometry(r.w, 0.08, r.h),
       new THREE.MeshStandardMaterial({ color: colorHex, map: t, roughness: 0.72, metalness: 0.03 })
     );
-    m.position.set(cx(r.x + r.w / 2), 0.04, cz(r.y + r.h / 2));
+    // circulação (decorativa) fica 1,5 cm abaixo dos pisos dos ambientes (evita z-fighting)
+    m.position.set(cx(r.x + r.w / 2), r.decorative ? 0.033 : 0.048, cz(r.y + r.h / 2));
     m.receiveShadow = true;
     scene.add(m);
   }
