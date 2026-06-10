@@ -26,6 +26,9 @@
     var s = slides[idx], canvas = document.getElementById('canvas3d');
     var is3d = s.getAttribute('data-slide') === '3d';
 
+    // sai do foco de ambiente ao trocar de slide
+    if (global.Scene3D && Scene3D.clearFocus) Scene3D.clearFocus();
+
     if (is3d && global.Scene3D) {
       if (canvas) canvas.style.display = 'block';
       if (!init3d) {

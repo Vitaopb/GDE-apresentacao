@@ -88,6 +88,7 @@
     controls.update();
 
     buildModel(data);
+    setupPicking();
     animate();
     window.addEventListener('resize', onResize);
   }
@@ -654,6 +655,11 @@
     m.position.set(cx(r.x + r.w / 2), r.decorative ? 0.015 : 0.04, cz(r.y + r.h / 2));
     m.receiveShadow = true;
     scene.add(m);
+    if (!r.decorative) {                       // piso clicável -> foca o ambiente
+      m.userData.room = r;
+      r._floorMat = m.material;
+      floorMeshes.push(m);
+    }
   }
 
   var capMat = null;
@@ -783,6 +789,84 @@
     tgtGoal = new THREE.Vector3(tx || 0, ty || 0, tz || 0);
   }
 
-  global.Scene3D = { init: init, onShow: onResize, setView: setView };
+  /* --------------------------------------------------------------------------
+   * Interação: clique num ambiente -> a câmera voa p/ dentro dele
+   * ------------------------------------------------------------------------*/
+  var floorMeshes = [];
+  var raycaster = null, mouseNDC = null, hovered = null, downPos = null;
+  var focusEl = null, focusName = null;
+
+  function fmtArea3D(a) {
+    var s = (typeof a === 'number') ? a.toFixed(2) : String(a);
+    return s.replace('.', ',') + ' m²';
+  }
+  function roomLabel(r) {
+    var extra = [];
+    if (r.beds) extra.push(r.beds);
+    if (r.area) extra.push(fmtArea3D(r.area));
+    return r.name + (extra.length ? ' — ' + extra.join(' · ') : '');
+  }
+
+  function focusRoom(roomOrId) {
+    var r = roomOrId;
+    if (typeof roomOrId === 'string') {
+      r = null;
+      floorMeshes.forEach(function (m) { if (m.userData.room.id === roomOrId) r = m.userData.room; });
+    }
+    if (!r) return;
+    var wx = cx(r.x + r.w / 2), wz = cz(r.y + r.h / 2);
+    var d = Math.max(r.w, r.h);
+    setView(wx, 1.7 + d * 0.45, wz + d * 0.55 + 1.3, wx, 0.75, wz - d * 0.05);
+    if (focusEl) { focusName.textContent = roomLabel(r); focusEl.hidden = false; }
+  }
+  function clearFocus() { if (focusEl) focusEl.hidden = true; }
+  function backToOverview() {
+    clearFocus();
+    setView(0, 33, 31, 0, 0, 0);
+  }
+
+  function pickRoom(e) {
+    if (!raycaster || !camera) return null;
+    var rect = renderer.domElement.getBoundingClientRect();
+    mouseNDC.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    mouseNDC.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+    raycaster.setFromCamera(mouseNDC, camera);
+    var hits = raycaster.intersectObjects(floorMeshes, false);
+    return hits.length ? hits[0].object.userData.room : null;
+  }
+
+  function setupPicking() {
+    raycaster = new THREE.Raycaster();
+    mouseNDC = new THREE.Vector2();
+    focusEl = document.getElementById('room-focus');
+    focusName = document.getElementById('room-focus-name');
+    var back = document.getElementById('room-focus-back');
+    if (back) back.addEventListener('click', backToOverview);
+    var el = renderer.domElement;
+    el.addEventListener('pointerdown', function (e) { downPos = [e.clientX, e.clientY]; });
+    el.addEventListener('pointerup', function (e) {
+      if (!downPos) return;
+      var dx = e.clientX - downPos[0], dy = e.clientY - downPos[1];
+      downPos = null;
+      if (dx * dx + dy * dy > 36) return;        // foi arrasto (órbita), não clique
+      var r = pickRoom(e);
+      if (r) focusRoom(r);
+    });
+    el.addEventListener('pointermove', function (e) {
+      var r = pickRoom(e);
+      if (r !== hovered) {                        // realce sutil do ambiente sob o mouse
+        if (hovered && hovered._floorMat) hovered._floorMat.emissive.setHex(0x000000);
+        hovered = r;
+        if (hovered && hovered._floorMat) hovered._floorMat.emissive.setHex(0x202018);
+      }
+      el.style.cursor = r ? 'pointer' : '';
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && focusEl && !focusEl.hidden) backToOverview();
+    });
+  }
+
+  global.Scene3D = { init: init, onShow: onResize, setView: setView,
+                     focusRoom: focusRoom, clearFocus: clearFocus };
 
 })(window);

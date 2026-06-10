@@ -167,6 +167,27 @@ html, body {
   height: 100%; padding: 40px; text-align: center;
   color: #64748b; font-size: 1rem;
 }
+/* chip do ambiente focado (clique num espaço do 3D) */
+.room-focus {
+  position: fixed; top: 54px; left: 50%; transform: translateX(-50%);
+  z-index: 36; display: flex; align-items: center; gap: 10px;
+}
+.room-focus[hidden] { display: none; }
+.room-focus__name {
+  background: rgba(255, 255, 255, .9); color: #3f372c;
+  font-weight: 700; font-size: 13.5px;
+  padding: 7px 16px; border-radius: 18px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, .14);
+}
+.room-focus__back {
+  font: inherit; font-size: 12.5px; font-weight: 700;
+  color: #0f766e; background: #fff;
+  border: 1.5px solid #14b8a6; border-radius: 16px;
+  padding: 6px 14px; cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .12);
+}
+.room-focus__back:hover { background: #14b8a6; color: #fff; }
+
 .nav-hint {
   position: fixed;
   bottom: 12px; right: 18px;
