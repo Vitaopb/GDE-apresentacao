@@ -462,15 +462,14 @@
     var n = f.count, hex = bedColor(f.color), i, placed = 0;
     if (n === 1) {
       var bw1 = Math.min(1.1, r.w * 0.4), bl1 = Math.min(2.1, r.h * 0.5);
-      var bxc = r.x + r.w * 0.3;
-      placeBed(bxc - bw1 / 2, r.y + 0.5, bw1, bl1, hex, true);
-      patient3D(bxc - bw1 / 2, r.y + 0.5, bw1, bl1, true, hex, 0);     // paciente deitado
-      if (f.iso) {
-        var bx = r.x + r.w - 1.7;
-        fb(bx - 0.05, r.y + 0.25, 0.06, r.h - 0.5, 1.7, 0xe9e9ee, 0.85);   // parede do WC
-        fb(bx + 0.15, r.y + 0.35, 0.85, 0.45, 0.82, 0xeef1f4, 0.41);       // bancada
-        sinkBasin(bx + 0.6, r.y + 0.57);
-        toilet3D(bx + 0.6, r.y + r.h - 0.6);
+      var bxc = r.x + r.w * 0.38;
+      placeBed(bxc - bw1 / 2, r.y + 0.6, bw1, bl1, hex, true);
+      patient3D(bxc - bw1 / 2, r.y + 0.6, bw1, bl1, true, hex, 0);     // paciente deitado
+      if (f.iso) {                                                     // quarto de isolamento (sem banheiro)
+        vitals3D(bxc + bw1 / 2 + 0.75, r.y + 1.0);                     // monitor de sinais vitais
+        poltrona(bxc + 0.1, r.y + 0.6 + bl1 + 0.8, true);              // poltrona do acompanhante
+        cart3D(r.x + r.w - 1.0, r.y + r.h - 0.85);                     // carrinho de apoio
+        bin3D(r.x + 0.5, r.y + r.h - 0.5, 0xd47272);                   // lixeira infectante
       }
       return;
     }
@@ -784,9 +783,22 @@
     // homem em pé na bancada das pias (lavando as mãos)
     if (f.man) man3D(r.x + r.w * 0.55, r.y + 1.35, 'north', f.man);
   }
+  // antecâmara do isolamento: pia de lavagem das mãos, álcool, EPIs, hamper e lixeira
   function fAnteroom(r) {
-    fb(r.x + r.w / 2 - 0.25, r.y + 0.45, 0.5, 0.36, 0.85, 0xffffff, 0.42);
-    fb(r.x + 0.15, r.y + r.h - 1.0, r.w - 0.3, 0.5, 0.6, 0xeef1f5, 0.3);
+    var mx = r.x + r.w / 2;
+    // pia de higienização das mãos (coluna + cuba + torneira)
+    fb(mx - 0.32, r.y + 0.3, 0.64, 0.5, 0.8, 0xeef1f4, 0.42);
+    sinkBasin(mx, r.y + 0.55);
+    fb(mx - 0.08, r.y + 0.06, 0.16, 0.1, 0.24, 0xffffff, 1.32);        // dispenser de álcool
+    // prateleira de EPIs (caixas de luvas/máscaras/aventais)
+    fb(r.x + 0.15, r.y + r.h * 0.5, r.w - 0.3, 0.32, 0.04, 0xcbbfa6, 1.35);
+    fb(r.x + 0.25, r.y + r.h * 0.5 + 0.05, 0.3, 0.22, 0.12, 0x7fb0d4, 1.45);
+    fb(r.x + 0.62, r.y + r.h * 0.5 + 0.05, 0.3, 0.22, 0.12, 0xbcd9c2, 1.45);
+    fb(r.x + 0.99, r.y + r.h * 0.5 + 0.05, 0.3, 0.22, 0.12, 0xe8d9b0, 1.45);
+    // hamper p/ aventais usados + lixeira infectante
+    cyl(mx + 0.15, r.y + r.h - 0.55, 0.18, 0.55, 0xd9d3c4, 0.36);
+    cyl(mx + 0.15, r.y + r.h - 0.55, 0.15, 0.04, 0xc4bca8, 0.67);
+    bin3D(r.x + 0.35, r.y + r.h - 0.5, 0xd47272);
   }
 
   // textura procedural de piso (placa 1×1 m com junta sutil)
