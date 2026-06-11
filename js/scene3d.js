@@ -212,8 +212,10 @@
   }
   // pia sobre bancada (cuba + torneira)
   function sinkBasin(px, pz) {
-    fb(px - 0.2, pz - 0.16, 0.4, 0.3, 0.08, 0xdfe8f0, 0.84);           // cuba
-    fb(px - 0.04, pz + 0.05, 0.08, 0.08, 0.14, 0xb9c2cc, 0.92);        // torneira
+    blob(px, pz, 0.2, 0xffffff, 0.86, 1.0, 0.35, 0.78);                // cuba oval branca
+    blob(px, pz, 0.15, 0xdfe8f0, 0.885, 1.0, 0.28, 0.7);               // interior
+    cyl(px, pz - 0.13, 0.022, 0.2, 0xb9c2cc, 0.95);                    // torneira (coluna, lado da parede)
+    limb(px, 1.04, pz - 0.13, px, 1.04, pz + 0.02, 0.018, 0xb9c2cc);   // bica
   }
   // poltrona de acompanhante (assento + encosto + braços)
   // faceNorth=true: encosto ao sul, assento olhando p/ o norte (cama acima);
@@ -760,7 +762,10 @@
       if (sEnd - sStart > 0.45) {
         fb(sStart, r.y + 0.18, sEnd - sStart, 0.5, 0.82, 0xeef1f4, 0.41);   // bancada
         var ssx = sStart + 0.45;
-        for (i = 0; i < nS && ssx < sEnd - 0.2; i++, ssx += 0.8) sinkBasin(ssx, r.y + 0.42);
+        for (i = 0; i < nS && ssx < sEnd - 0.2; i++, ssx += 0.8) {
+          sinkBasin(ssx, r.y + 0.42);
+          fb(ssx - 0.22, r.y + 0.08, 0.44, 0.035, 0.55, 0xcfe2ec, 1.5);     // espelho na parede
+        }
       }
     }
     // vasos na parede de baixo, cada um dentro de um BOX fechado (baia c/ divisórias)
@@ -769,6 +774,14 @@
       var depth = Math.min(1.4, r.h * 0.42);     // profundidade do box (parede -> dentro)
       var ws = Math.min(1.2, (r.w - 1.0) / nW);   // largura de cada box
       var startX = r.x + (r.w - ws * nW) / 2;     // centraliza a fileira de boxes
+      // se a porta fica na parede de baixo, encosta o box no canto oeste (longe do vão)
+      var doorB = null;
+      (r.doors || []).forEach(function (d) { if (d.side === 'bottom') doorB = d; });
+      if (doorB) {
+        var gapStart = r.x + (doorB.at != null ? doorB.at : 0.5) * r.w - ((doorB.w || 1) + 0.3) / 2;
+        startX = r.x + 0.18;
+        ws = Math.min(ws, (gapStart - startX - 0.1) / nW);
+      }
       var backZ = r.y + r.h;                       // parede de baixo (fundo dos boxes)
       var ph = 1.7, pt = 0.07, pc = 0xe4e0ec;      // altura/espessura/cor das divisórias
       for (i = 0; i < nW; i++) {
