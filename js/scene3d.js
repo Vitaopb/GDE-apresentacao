@@ -790,11 +790,6 @@
     fb(mx - 0.32, r.y + 0.3, 0.64, 0.5, 0.8, 0xeef1f4, 0.42);
     sinkBasin(mx, r.y + 0.55);
     fb(mx - 0.08, r.y + 0.06, 0.16, 0.1, 0.24, 0xffffff, 1.32);        // dispenser de álcool
-    // prateleira de EPIs (caixas de luvas/máscaras/aventais)
-    fb(r.x + 0.15, r.y + r.h * 0.5, r.w - 0.3, 0.32, 0.04, 0xcbbfa6, 1.35);
-    fb(r.x + 0.25, r.y + r.h * 0.5 + 0.05, 0.3, 0.22, 0.12, 0x7fb0d4, 1.45);
-    fb(r.x + 0.62, r.y + r.h * 0.5 + 0.05, 0.3, 0.22, 0.12, 0xbcd9c2, 1.45);
-    fb(r.x + 0.99, r.y + r.h * 0.5 + 0.05, 0.3, 0.22, 0.12, 0xe8d9b0, 1.45);
     // hamper p/ aventais usados + lixeira infectante
     cyl(mx + 0.15, r.y + r.h - 0.55, 0.18, 0.55, 0xd9d3c4, 0.36);
     cyl(mx + 0.15, r.y + r.h - 0.55, 0.15, 0.04, 0xc4bca8, 0.67);
